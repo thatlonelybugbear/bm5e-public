@@ -1,0 +1,72 @@
+{
+	"BM5E": {
+		"UI": {
+			"FilterEffects": "Filter effects...",
+			"ClearEffects": "Clear effects"
+		},
+		"LinksMenu": {
+			"Name": "Module Support",
+			"Label": "Links",
+			"Hint": "Open BM5E documentation, issue tracker, and support links.",
+			"Title": "Resources & Support",
+			"GitHubMessage": "Project links",
+			"DiscordMessage": "Community",
+			"SupportMessage": "Toss a Coin to your Bugbear"
+		},
+		"EnableStatusHUDSorting": {
+			"Switch": {
+				"Name": "Enable Status HUD Sorting",
+				"Hint": "When enabled, the status effects labels will also be shown and an opinionated sorting will take place!"
+			},
+			"SortingType": {
+				"Name": "Status Effects sorting",
+				"Hint": "Fill by rows (left -> right) or by columns (top -> bottom)",
+				"Choices": {
+					"Rows": "Rows",
+					"Columns": "Columns"
+				}
+			},
+			"NumberColumns": {
+				"Name": "Number of columns",
+				"Hint": "Divide the HUD status effects number into this number of columns"
+			},
+			"Scale": {
+				"Name": "HUD scale",
+				"Hint": "Scale the Status HUD as a percentage of its default size."
+			},
+			"Filter": {
+				"Name": "Enable status filter",
+				"Hint": "Show or hide the status filter input on the Token HUD."
+			},
+			"FilterClear": "Clear filter",
+			"FilterEffects": "Filter effects...",
+			"ClearAll": "Clear effects"
+		},
+		"AutoRollDamage": {
+			"Name": "Auto Roll Damage",
+			"Hint": "Automatically roll damage when an attack is successful.",
+			"Prompt": "You have already rolled damage for this attack. What do you want to do? Close dialog to cancel!",
+			"Choices": {
+				"Reroll": "Reroll Damage",
+				"Replace": "Replace Roll"
+			}
+		},
+		"AutoPopout": {
+			"Name": "Pop use message out",
+			"Hint": "When enabled, the item use chat message will be popped out for Eldritch Blast lvl >= 5, Extra attacks, Guardian of Faith, Magic Missiles (modern rules), Scorching Ray, Spirit Guardians, Spiritual Weapon"
+		},
+		"Items": {
+			"EldritchBlast": "Eldritch Blast",
+			"SpiritGuardians": "Spirit Guardians",
+			"SpiritualWeapon": "Spiritual Weapon",
+			"GuardianOfFaith": "Guardian of Faith",
+			"ExtraAttack": "Extra Attack",
+			"ScorchingRay": "Scorching Ray",
+			"MagicMissile": "Magic Missile"
+		},
+		"ChatMessagesTooltips": {
+			"Name": "Show roll results on message buttons",
+			"Hint": "When enabled, the Attack and Damage buttons in chat messages will show roll results."
+		}
+	}
+}

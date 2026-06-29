@@ -1,0 +1,68 @@
+{
+	"BM5E": {
+		"UI": {
+			"FilterEffects": "Filtrar Efeitos...",
+			"ClearEffects": "Limpar Efeitos"
+		},
+		"LinksMenu": {
+			"Name": "Suporte do Módulo",
+			"Label": "Links",
+			"Hint": "Abrir a documentação, o rastreador de problemas e os links de suporte do BM5E.",
+			"Title": "Recursos e Suporte",
+			"GitHubMessage": "Links do GitHub",
+			"DiscordMessage": "Entre na Toca",
+			"SupportMessage": "Dê um Trocado pro seu Bugbear"			
+		},
+		"EnableStatusHUDSorting": {
+			"Switch": {
+				"Name": "Habilitar Organização de Status da HUD",
+				"Hint": "Quando ativado, as etiquetas de efeitos de status também serão exibidas e uma classificação baseada em opiniões será aplicada!"
+			},
+			"SortingType": {
+				"Name": "Organização de Efeitos de Status",
+				"Hint": "Preencher por linhas (esquerda -> direita) ou por colunas (superior -> inferior).",
+				"Choices": {
+					"Rows": "Linhas",
+					"Columns": "Colunas"
+				}
+			},
+			"NumberColumns": {
+				"Name": "Número de Colunas",
+				"Hint": "Divida o número de efeitos de status da HUD nesse número de colunas."
+			},
+			"Filter": {
+				"Name": "Habilitar Filtro de Status",
+				"Hint": "Mostra ou oculta o filtro de status na HUD do Token."
+			},
+			"FilterClear": "Limpar Filtros",
+			"FilterEffects": "Filtrar Efeitos...",
+			"ClearAll": "Limpar Efeitos"
+		},
+		"AutoRollDamage": {
+			"Name": "Auto-Rolar Dano",
+			"Hint": "O dano é rolado automaticamente quando um ataque é bem-sucedido.",
+			"Prompt": "Você já rolou o dano para este ataque. O que deseja fazer? Feche o diálogo para cancelar!",
+			"Choices": {
+				"Reroll": "Rerrolar Dano",
+				"Replace": "Substituir Rolagem"
+			}
+		},
+		"AutoPopout": {
+			"Name": "Destacar Mensagem de Uso",
+			"Hint": "Quando ativada, a mensagem de uso do item será destacada para Eldritch Blast nível 5 ou superior, Extra Attack, Guardian of Faith, Magic Missile (regras modernas), Scorching Ray, Spirit Guardians, Spiritual Weapon."
+		},
+		"Items": {
+			"EldritchBlast": "Eldritch Blast",
+			"SpiritGuardians": "Spirit Guardians",
+			"SpiritualWeapon": "Spiritual Weapon",
+			"GuardianOfFaith": "Guardian of Faith",
+			"ExtraAttack": "Extra Attack",
+			"ScorchingRay": "Scorching Ray",
+			"MagicMissile": "Magic Missile"
+		},
+		"ChatMessagesTooltips": {
+			"Name": "Exibir Resultados de Rolagem nos Botões de Mensagem",
+			"Hint": "Quando ativado, os botões de Ataque e Dano nas mensagens de chat exibirão os resultados dos dados."
+		}
+	}
+}
