@@ -33,7 +33,7 @@ Timing:
 Roll details:
 
 - `ability=xyz`, such as `str`, `dex`, or `con`
-- `ability=str|dex`, `ability=str||dex`, or `ability=str, dex` for multi-ability saves/checks
+- `ability=str|dex`, `ability=str||dex`, or `ability=str | dex | con` for multi-ability saves/checks
 - `dc=VALUE`
 - `@` uses source actor roll data
 - `##` uses target actor roll data
