@@ -8,11 +8,33 @@
 			"Name": "Suporte do Módulo",
 			"Label": "Links",
 			"Hint": "Abrir a documentação, o rastreador de problemas e os links de suporte do BM5E.",
-			"Title": "Recursos e Suporte",
+			"Title": "Recursos & Suporte",
 			"GitHubMessage": "Links do GitHub",
-			"DiscordMessage": "Entre na Toca",
+			"DiscordMessage": "Comunidade",
 			"SupportMessage": "Dê um Trocado pro seu Bugbear"			
 		},
+		"BugbearsMechanics": "Bugbear's Mechanics",
+    	"MutableDamageCalculation": {
+      		"Name": "Cálculo de Dano Mutável (Temporário)",
+      		"Hint": "Adiciona temporariamente ganchos de cálculo de dano mutável ao D&D 5e. Requer o libWrapper e recarrega o mundo quando alterado.",
+      		"LibWrapperRequired": "O cálculo de dano mutável do BM5E requer que o libWrapper esteja habilitado."
+    	},
+    	"DamageApplication": {
+      		"Enabled": {
+        		"Name": "Ativar Restauração de Dano",
+        		"Hint": "Registra aplicações de dano nativas do D&D5e e adicionar um botão Restaurar a bandeja de dano."
+      		},
+      		"Applied": "Aplicado",
+      		"Restore": "Restaurar",
+      		"Restored": "Restaurado"
+    	},
+    	"EffectApplicationOutcomes": {
+      		"Name": "Desmarcar Alvos de Efeitos por Resultado de Rolagem",
+      		"Hint": "Desmarca automaticamente os alvos de ataques que erraram e os alvos que obtiveram sucesso em salvaguardas nas bandejas de aplicação de efeitos."
+    	},
+    	"Activation": {
+      		"IsDamaged": "Sofrer Dano"
+    	},
 		"EnableStatusHUDSorting": {
 			"Switch": {
 				"Name": "Habilitar Organização de Status da HUD",
@@ -30,6 +52,14 @@
 				"Name": "Número de Colunas",
 				"Hint": "Divida o número de efeitos de status da HUD nesse número de colunas."
 			},
+			"Scale": {
+        		"Name": "Escala da HUD",
+        		"Hint": "Redimensiona a HUD de Status como uma porcentagem do seu tamanho padrão."
+      		},
+      		"ScaleEnabled": {
+        		"Name": "Ativar Escala da HUD",
+        		"Hint": "Redimensiona a HUD de Status para compensar o zoom da tela."
+      		},
 			"Filter": {
 				"Name": "Habilitar Filtro de Status",
 				"Hint": "Mostra ou oculta o filtro de status na HUD do Token."
@@ -48,8 +78,33 @@
 			}
 		},
 		"AutoPopout": {
-			"Name": "Destacar Mensagem de Uso",
-			"Hint": "Quando ativada, a mensagem de uso do item será destacada para Eldritch Blast nível 5 ou superior, Extra Attack, Guardian of Faith, Magic Missile (regras modernas), Scorching Ray, Spirit Guardians, Spiritual Weapon."
+			"Name": "Ativar Uso de Mensagens Pop-Up",
+			"Hint": "Exibe automaticamente mensagens pop-up de uso para padrões configurados, atividades ativadas manualmente e ataques extras.",
+			"Identifiers": {
+        		"General": "Geral",
+        		"DefaultsTitle": "Padrões configurados de itens e atividades",
+        		"Name": "Auto-Destacar Mensagens",
+        		"Label": "Configurar",
+        		"Hint": "Configura itens e atividades cujas mensagens de uso devem ser exibidas automaticamente em pop-up.",
+        		"Title": "Auto-Destacar Mensagens de Uso",
+        		"HintText": "Insira o nome, ID, identificador ou UUID de um item ou atividade, ou o UUID, ID ou nome de um ator. Você também pode arrastar um documento de compêndio para cá. As configurações de Comportamento da Atividade substituem esses padrões.",
+        		"Placeholder": "Nome, id, identificador ou UUID",
+        		"AnyItemType": "Qualquer Tipo de Item",
+        		"AnyActivityType": "Qualquer Tipo de Atividade",
+        		"Add": "Adicionar Entrada",
+        		"Restore": "Restaurar Padrões",
+        		"Restored": "Padrões de exibição de mensagens de uso em pop-up restaurados.",
+        		"Import": "Importar",
+        		"Export": "Exportar",
+        		"Imported": "Padrões de exibição de mensagens de uso em pop-up importados.",
+        		"ImportFailed": "O arquivo selecionado não é uma exportação válida dos padrões de exibição de mensagens de uso em pop-up.",
+        		"ExtraAttackTitle": "Característica de Ataque Extra",
+        		"ExtraAttackHint": "Corresponder a uma Característica do ator. Os ataques com armas corpo a corpo e à distância desse ator serão exibidos em pop-up."
+      		},
+      		"Activity": {
+        		"Name": "Usar Mensagem Pop-Up",
+        		"Hint": "Adição do Bugbear's Mechanics 5e. Exibe a mensagem de uso em pop-up para reutilizá-la conforme necessário. Útil para Ataque Extra, uso rápido de Guardiões Espirituais, etc."
+      		}
 		},
 		"Items": {
 			"EldritchBlast": "Eldritch Blast",
@@ -63,6 +118,126 @@
 		"ChatMessagesTooltips": {
 			"Name": "Exibir Resultados de Rolagem nos Botões de Mensagem",
 			"Hint": "Quando ativado, os botões de Ataque e Dano nas mensagens de chat exibirão os resultados dos dados."
-		}
+		},
+		"EffectsEditor": {
+      		"Title": "Editor de Efeito BM5E",
+      		"ChangeType": "Bugbear's Mechanics 5e",
+      		"LegacyChangeType": "BM5E",
+      		"ChangeIndex": "Alterar {index}",
+      		"AttributeKey": "Chave do Atributo",
+      		"AttributeKeyHint": "Para obter detalhes sobre o dano contínuo do BM5E, abra o <a href=\"#\" data-bm5e-readme>README local</a>.",
+      		"Readme": {
+        		"MissingDocument": "O documento README do BM5E não foi encontrado.",
+        		"MissingPack": "O compêndio do README do BM5E não foi encontrado: {pack}"
+      		},
+      		"Overtime": "Overtime",
+      		"ActivityType": "Tipo de Atividade",
+      		"OvertimeActivityType": "Atividade de Overtime",
+      		"CreateActivityType": "Criar Atividade",
+      		"CreateActivity": "Criar Atividade",
+      		"CreateNewActivity": "Criar Atividade do Sistema",
+      		"CreatePseudoActivity": "Criar Atividade Simples do BM5E",
+      		"ChooseItemActivity": "Escolher Atividade do Item",
+      		"CreatedActivity": "Atividade Criada",
+      		"SelectedActivity": "Selecionado",
+      		"LinkActivityType": "Vincular Atividade",
+      		"LinkedActivity": "Atividade Vinculada",
+      		"DropActivityHere": "Vincular Atividade Existente",
+      		"ActivitySourceHint": "Cria uma atividade no Item deste efeito ou no Item de Overtime do BM5E do ator, para efeitos pertencentes ao ator.",
+      		"OverrideActivityName": "Substituir Nome da Atividade",
+      		"StartOf": "Início de",
+      		"EndOf": "Fim de",
+      		"PseudoActivityType": "Pseudo-Atividade",
+      		"PseudoActivity": "Pseudo-Atividade",
+      		"EditPseudoActivity": "Editar Pseudo-Atividade",
+      		"SaveAbilities": "Atributos da Salvaguarda",
+      		"SaveDC": "CD da Salvaguarda",
+      		"PreserveDC": "Preservar CD de Origem",
+      		"PreserveDCHint": "Determina a CD da atividade vinculada usando o ator de origem antes de criar a atividade de overtime.",
+      		"Magical": "Mágico",
+      		"MagicalHint": "Trata esta atividade de overtime como mágica para módulos compatíveis.",
+      		"CheckAbility": "Atributo do Teste",
+      		"AssociatedSkills": "Perícias Associadas",
+      		"AssociatedTools": "Ferramentas Associadas",
+      		"Tool": "Ferramenta",
+      		"CheckDC": "CD do Teste",
+      		"DamageAmount": "Quantidade de Dano",
+      		"DamageType": "Tipo de Dano",
+      		"DamageOnSave": "Dano em Sucesso",
+      		"OutOfCombat": "Fora de Combate",
+      		"Interval": "Intervalo",
+      		"IntervalUnit": {
+        		"seconds": "Segundos",
+        		"minutes": "Minutos",
+        		"hours": "Houras",
+        		"days": "Dias"
+      		},
+      		"Half": "Metade",
+      		"Full": "Completo",
+      		"NoActivityParent": "O BM5E não encontrou um item para criar a atividade de overtime.",
+      		"ToggleBehavior": "Alternar Comportamento",
+      		"OutcomeEffects": "Efeitos de Resultado",
+      		"SuccessTarget": "Alvo Bem-Sucedido",
+      		"FailureTarget": "Alvo que Falhou",
+      		"SuccessesNeeded": "Sucessos Necessários",
+      		"FailuresNeeded": "Falhas Necessárias",
+      		"Consecutive": "Consecutivo",
+      		"OnEachSuccess": "A Cada Sucesso",
+      		"OnEachFailure": "A Cada Falha",
+      		"SuccessFields": "Campos de Sucesso",
+      		"FailureFields": "Campos de Falha",
+      		"TriggerFields": "Campos de Gatilho",
+      		"TriggerCounter": "Contador de Gatilho",
+      		"TriggersNeeded": "Gatilhos Necessários",
+      		"TriggeredEventsNumber": "Número de Eventos Acionados",
+      		"OnFinalTrigger": "No Gatilho Finaç",
+      		"OnEachTrigger": "A Cada Gatilho",
+      		"OverallSuccesses": "Total de Sucessos",
+      		"OverallFailures": "Total de Falhas",
+      		"ConsecutiveSuccesses": "Sucessos Consecutivos",
+      		"ConsecutiveFailures": "Falhas Consecutivos",
+      		"ConsecutiveSuccessTarget": "Sucessos Consecutivos Necessários",
+      		"ConsecutiveFailureTarget": "Falhas Consecutivos Necessários",
+      		"NumberPlaceholder": "Número",
+      		"RemoveOvertime": "Remover Overtime",
+     		"GeneratedValue": "Valor Gerado",
+      		"GeneratedJson": "JSON Gerado",
+      		"GeneratedValueHint": "Pré-visualização do valor de dano contínuo gerado a partir dos campos do editor.",
+      		"Apply": "Aplicar",
+      		"ApplyClose": "Aplicar e Fechar",
+      		"Reset": "Redefinir",
+      		"Trigger": {
+        		"encounterEnd": "Fim do Encontro",
+        		"roundStart": "Início da Rodada",
+        		"roundEnd": "Fim da Rodada",
+        		"sourceTurnStart": "Início do Turno da Origem",
+        		"sourceTurnEnd": "Fim do Turno da Origem",
+        		"eachTurnStart": "Início de Cada Turno",
+        		"eachTurnEnd": "Fim de Cada Turno"
+      		},
+      		"TriggerOption": {
+        		"turn": "Turno",
+        		"sourceTurn": "Turno da Origem",
+        		"eachTurn": "Cada Turno",
+        		"round": "Rodada",
+        		"encounter": "Encontro"
+      		}
+    	},
+    	"Enchantment": {
+      		"Enabled": {
+        		"Name": "Ativar Gerenciamento de Encantamentos",
+        		"Hint": "Habilita o gerenciamento de encantamentos do Bugbear's Mechanics 5e nos cartões de chat e encantamentos acumuláveis."
+      		},
+      		"Stackable": {
+        		"Name": "Permitir Acúmulo de Encantamentos",
+        		"Hint": "Adição do Bugbear's Mechanics 5e. Permite que este encantamento seja aplicado ao mesmo item mais de uma vez."
+      		},
+      		"MaximumItems": {
+        		"Name": "Máximo de Itens Encantados",
+        		"Hint": "Adição do Bugbear's Mechanics 5e. Número de itens diferentes que este encantamento pode afetar simultaneamente. O padrão é 1. Use 0 para ilimitado.",
+        		"Reached": "Este encantamento atingiu o número máximo de itens encantados."
+      		},
+      		"Unauthorized": "Somente o proprietário do alvo ou o usuário do encantamento podem aplicar este encantamento."
+    	}
 	}
 }
