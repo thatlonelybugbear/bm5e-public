@@ -229,7 +229,7 @@
         		"Hint": "Habilita o gerenciamento de encantamentos do Bugbear's Mechanics 5e nos cartões de chat e encantamentos acumuláveis."
       		},
       		"Stackable": {
-        		"Name": "Permitir Acúmulo de Encantamentos",
+        		"Name": "Permitir Acúmulo",
         		"Hint": "Adição do Bugbear's Mechanics 5e. Permite que este encantamento seja aplicado ao mesmo item mais de uma vez."
       		},
       		"MaximumItems": {
