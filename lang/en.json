@@ -14,10 +14,32 @@
 			"SupportMessage": "Toss a Coin to your Bugbear"
 		},
 		"BugbearsMechanics": "Bugbear's Mechanics",
+		"IntegratedDamageModifiers": {
+			"Name": "Integrated Damage Modifiers",
+			"Hint": "Choose which D&D 5e damage modifiers BM5E automates independently of Mutable Damage Calculation.",
+			"ElementalAdept": "Elemental Adept"
+		},
+		"ChatDoubleClick": {
+			"Name": "Enable chat document double-clicks",
+			"Hint": "Double-click document icons and names in chat messages to open their sheets or images."
+		},
+		"ChatAction": {
+			"Attack": "Attack",
+			"Check": "Check",
+			"Damage": "Damage",
+			"Save": "Save"
+		},
 		"MutableDamageCalculation": {
-			"Name": "Mutable Damage Calculation (Temporary)",
-			"Hint": "Temporarily adds D&D 5e mutable damage-calculation hooks. Requires libWrapper and reloads the world when changed.",
-			"LibWrapperRequired": "BM5E mutable damage calculation requires libWrapper to be enabled."
+			"Name": "Mutable Damage Calculation",
+			"Hint": "Adds D&D 5e mutable damage-calculation hooks required by automations such as Undead Fortitude. Requires libWrapper and reloads the world when changed.",
+			"LibWrapperRequired": "BM5E mutable damage calculation requires libWrapper to be enabled.",
+			"Features": {
+				"Name": "Integrated Damage Features",
+				"Hint": "Choose which D&D 5e features BM5E automates during damage calculation.",
+				"DeathWard": "Death Ward",
+				"UndyingSentinel": "Undying Sentinel",
+				"UndeadFortitude": "Undead Fortitude"
+			}
 		},
 		"DamageApplication": {
 			"Enabled": {
@@ -32,8 +54,19 @@
 			"Name": "Deselect effect targets by roll outcome",
 			"Hint": "Automatically deselect missed attack targets and targets that succeed on saving throws from effect application trays."
 		},
-		"Activation": {
-			"IsDamaged": "Is Damaged"
+		"ActivationTriggers": {
+			"Title": "BM5E Activation Triggers",
+			"Triggers": "Triggers",
+			"Event": "Event",
+			"Damaged": "Damaged",
+			"Healed": "Healed",
+			"TriggeredEvent": "Triggered: {event}",
+			"HitPoints": "Only when HP is",
+			"Operator": "Operator",
+			"HPPercentage": "HP Percentage",
+			"DamageTypes": "Damage Types",
+			"HealingTypes": "Healing Types",
+			"Save": "Save"
 		},
 		"EnableStatusHUDSorting": {
 			"Switch": {
@@ -154,8 +187,6 @@
 			"SaveDC": "Save DC",
 			"PreserveDC": "Preserve source DC",
 			"PreserveDCHint": "Resolve the linked activity's DC using its source actor before creating the overtime activity.",
-			"Magical": "Magical",
-			"MagicalHint": "Treat this overtime activity as magical for compatible modules.",
 			"CheckAbility": "Check Ability",
 			"AssociatedSkills": "Associated Skills",
 			"AssociatedTools": "Associated Tools",

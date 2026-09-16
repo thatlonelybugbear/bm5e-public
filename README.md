@@ -2,25 +2,16 @@
 
 Bugbear's Mechanics is a Foundry VTT module which introduces some highly opinionated system mechanics.
 
+The current release requires Foundry VTT 14 and D&D5e 6.0.2 or newer.
+
 [Showcase video](https://github.com/user-attachments/assets/7d135cea-8e2b-4143-96b3-af81690d9e64)
-
-<img width="296" height="391" alt="image" src="https://github.com/user-attachments/assets/42c556b9-43e6-40c2-a691-5f2d610c9645" />
-
-<img width="469" height="353" alt="image" src="https://github.com/user-attachments/assets/ee72d1cb-9321-4667-9f5f-5ba26d7f6f22" />
-
-<img width="289" height="289" alt="image" src="https://github.com/user-attachments/assets/a22bf618-3052-40d7-80fc-3ba02a446410" />
-
-<img width="521" height="298" alt="image" src="https://github.com/user-attachments/assets/73e2a777-fddd-4e12-9706-3883be35d4e8" />
-
-<img width="290" height="371" alt="image" src="https://github.com/user-attachments/assets/29f5529e-d22e-489b-ab86-ed289433f244" />
-
-<img width="295" height="611" alt="image" src="https://github.com/user-attachments/assets/74be6609-a813-4aba-974a-9ba1950df4a4" />
-
-<img width="287" height="489" alt="image" src="https://github.com/user-attachments/assets/d5e1797e-96f7-47a1-81f8-e2690facc8bc" />
 
 ## Table of Contents
 
 - [Module Settings](#module-settings): chat icon double-clicks, damage automation, mutable damage hooks, chat popouts, and status HUD sorting.
+- [Chat Roll Controls](#chat-roll-controls): compact-card labels and in-place rerolls.
+- [Integrated Damage Features](#integrated-damage-features): Death Ward, Undying Sentinel, Undead Fortitude, and Elemental Adept.
+- [Activation Triggers](#activation-triggers): damage and healing triggered activities.
 - [Overtime Effects](#overtime-effects): automatic combat and encounter activity triggers from Active Effects.
 - [Enchantments](#enchantments): chat-card target and item selection for dnd5e enchantment activities.
 
@@ -34,11 +25,27 @@ The **Module Support** settings menu opens BM5E documentation, issue tracker, Di
 
 BM5E adds double-click behavior to chat card document icons.
 
-- Double-click an actor, token, item, or effect icon in chat to open that document sheet.
+- Double-click an actor name, target pill, item icon, activity icon, or effect icon in chat to open that document sheet.
+- Effect tray handling is restricted to the effect icon rather than the full effect row.
 - If the document is not visible to the user but has an image, BM5E opens an image popout instead.
 - Double-clicking an already open sheet or image popout closes it.
 - Buttons, links, inputs, selects, text areas, and damage multiplier buttons are ignored.
 - Single clicks are delayed briefly so normal dnd5e click behavior still works when no double-click follows.
+- **Enable chat document double-clicks** is a per-user setting and is enabled by default.
+
+### Chat Roll Controls
+
+BM5E extends existing compact D&D5e chat messages without creating replacement roll messages.
+
+- Attack, Save, and Check rolls can be rerolled with Advantage, Normal, or Disadvantage.
+- Damage and Healing rolls can be rerolled as Normal or Critical.
+- Damage rerolls include every damage part produced by the activity.
+- Compact save summaries provide a separate reroll control for each target.
+- Rerolls update the existing message, retain the initial total, count rerolls, and reevaluate the target DC and success or failure.
+- Damage rerolls add or remove the Critical property pill to match the selected mode.
+- Reroll controls are available only when the current user can update the roll message.
+- Compact Attack, Damage, Save, and Check controls receive visible text labels.
+- Attack controls indicate hits and misses, while Advantage and Critical options use the system success color.
 
 ### Auto Roll Damage
 
@@ -48,11 +55,11 @@ Manual damage clicks are also intercepted. If the card already has a damage mess
 
 For non-attack damage activities, BM5E can roll damage after the activity use. Pure damage activities are left to dnd5e's default damage roll behavior.
 
-### Mutable Damage Calculation (Temporary)
+### Mutable Damage Calculation
 
-Enable **Mutable Damage Calculation (Temporary)** only while libWrapper is active. The setting reloads the world and provides mutable `dnd5e.preCalculateDamage` and `dnd5e.calculateDamage` hook context. This temporary compatibility implementation will be re-evaluated when D&D5e v6.0.0 releases.
+Enable **Mutable Damage Calculation** only while libWrapper is active. The setting reloads the world and provides mutable `dnd5e.preCalculateDamage` and `dnd5e.calculateDamage` hook context required by automations such as Death Ward, Undying Sentinel, and Undead Fortitude.
 
-The post-calculation context includes `damageAfterTempHP`, `wouldDropToZero`, `remainingDamage`, `killedOutright`, and `dropToOneHP()`. `killedOutright` is true when damage reducing an actor to 0 Hit Points leaves remaining damage equal to or greater than their Hit Point maximum: D&D5e's massive-damage instant-death threshold.
+The post-calculation context includes `damageAfterTempHP`, `wouldDropToZero`, `remainingDamage`, `killedOutright`, and `dropToOneHP()`.
 
 ```js
 Hooks.on('dnd5e.calculateDamage', (_actor, _damages, _options, context) => {
@@ -60,77 +67,6 @@ Hooks.on('dnd5e.calculateDamage', (_actor, _damages, _options, context) => {
 });
 ```
 
-Death Ward example:
-
-```js
-Hooks.on('dnd5e.calculateDamage', (actor, _damages, _options, context) => {
-	if (!actor.appliedEffects.some((effect) => effect.name === 'Death Ward')) return;
-	if (!context.killedOutright) context.dropToOneHP();
-});
-```
-
-Undying Sentinel example:
-
-```js
-const RETRY = 'my-module.undyingSentinel';
-
-Hooks.on('dnd5e.calculateDamage', (actor, damages, options, context) => {
-	if (!actor.items.some((item) => item.name === 'Undying Sentinel')) return;
-	if (context.killedOutright || options[RETRY]) {
-		if (options[RETRY] === 'success') context.dropToOneHP();
-		return;
-	}
-
-	const originalDamages = foundry.utils.deepClone(context.originalDamages);
-	const retryOptions = { ...options };
-	const dc = damages.amount;
-
-	void (async () => {
-		const rolls = await actor.rollSavingThrow(
-			{ ability: 'con' },
-			{},
-			{ data: { flags: { 'my-module': { undyingSentinel: { dc } } } } },
-		);
-		if (!rolls) return;
-
-		retryOptions[RETRY] = rolls[0].total >= dc ? 'success' : 'failure';
-		await actor.applyDamage(originalDamages, retryOptions);
-	})();
-
-	return false;
-});
-```
-### Undead Fortitude Example
-
-```js
-const RETRY = 'my-module.undeadFortitude';
-
-Hooks.on('dnd5e.calculateDamage', (actor, damages, options, context) => {
-	if (!actor.items.getName('Undead Fortitude')) return;
-	if (!context?.wouldDropToZero || !options?.isDelta) return;
-	if (options[RETRY]) {
-		if (options[RETRY] === 'success') context.dropToOneHP();
-		return;
-	}
-
-	const message = options.originatingMessage ?? options.origin;
-	const isCritical = message?.rolls?.some((roll) => roll.isCritical);
-	const hasRadiantDamage = context.originalDamages.some((damage) => damage.type === 'radiant' && damage.value > 0);
-	if (isCritical || hasRadiantDamage) return;
-
-	const originalDamages = foundry.utils.deepClone(context.originalDamages);
-	const retryOptions = { ...options };
-	const dc = 5 + context.damageAfterTempHP;
-
-	void (async () => {
-		const rolls = await actor.rollSavingThrow({ ability: 'con', target: dc });
-		retryOptions[RETRY] = rolls?.[0]?.isSuccess ? 'success' : 'failure';
-		await actor.applyDamage(originalDamages, retryOptions);
-	})();
-
-	return false;
-});
-```
 Pre-calculation hooks can mutate damage traits and modifications for one calculation:
 
 ```js
@@ -140,6 +76,42 @@ Hooks.on('dnd5e.preCalculateDamage', (actor, _damages, _options, context) => {
 	context.traits.dr.value.add('cold');
 });
 ```
+
+### Integrated Damage Features
+
+The **Integrated Damage Features** multiselect is available when **Mutable Damage Calculation** is enabled. BM5E resolves enabled lethal-damage protections in this order: Death Ward, Undying Sentinel, then Undead Fortitude. Only one protection resolves for each damage application.
+
+#### Death Ward
+
+- Recognizes an Active Effect named `Death Ward` or `Protection from Death`.
+- Also recognizes an effect whose origin is an item with the `death-ward` identifier.
+- Deletes the consumed effect and leaves the actor at 1 HP.
+
+#### Undying Sentinel
+
+- Requires an owned item with the `undying-sentinel` identifier.
+- Triggers only when the item and its selected activity have sufficient uses available.
+- Leaves the actor at 1 HP, targets the actor's token, and uses the item's Heal activity when available.
+- If no uses are available, BM5E continues to the next eligible protection without attempting to use the item.
+
+#### Undead Fortitude
+
+- Requires an owned item with the `undead-fortitude` identifier.
+- Does not trigger for Radiant damage or damage from a Critical Hit.
+- Rolls a configurable Constitution saving throw against DC 5 plus the damage taken.
+- On a success, the actor drops to 1 HP instead of 0 HP.
+- Rerolling the save updates its chat message but does not retroactively revise damage already applied.
+
+#### Integrated Damage Modifiers
+
+The independent **Integrated Damage Modifiers** multiselect does not require **Mutable Damage Calculation** or libWrapper.
+
+The Elemental Adept integration applies when the caster owns an item with the `elemental-adept` identifier and its name ends with the damage type, such as `Elemental Adept (Fire)`.
+
+- Applies only to spells.
+- Ignores matching damage resistance, but not immunity.
+- Does not implement the rule that treats matching damage-die results of 1 as 2. That behavior can be configured with Automated Conditions 5e.
+
 ### Auto Popout
 
 When **Enable use message pop-outs** is enabled, BM5E can pop out chat cards for repeated-use or multi-roll workflows where the original card is likely to be reused.
@@ -171,9 +143,23 @@ When **Enable Status HUD Sorting** is enabled, BM5E replaces the token status pa
 
 **Status Effects sorting** controls whether the grid fills by rows or by columns. **Number of columns** controls the grid width. **HUD scale** scales the palette and adjusts against canvas zoom. **Enable status filter** adds a search box, Escape clears or closes the palette, Enter applies the first visible match, and **Clear effects** removes current actor statuses and custom HUD effects.
 
+The status palette is constrained to the visible viewport and gains vertical scrolling when its configured rows, columns, scale, or current canvas zoom would otherwise place it off-screen.
+
 ### Overtime Debug Logging
 
 **Overtime Debug Logging** enables BM5E overtime debug logs. It can be combined with channel flags through `globalThis.bm5e.debug`.
+
+## Activation Triggers
+
+The **BM5E Triggers** activity activation type runs an activity after its actor is damaged or healed.
+
+Open the trigger editor from the activity's Activation Cost controls, then configure:
+
+- **Event**: Damaged or Healed.
+- **Only when HP is**: an optional resulting-HP percentage comparison.
+- **Damage Types** or **Healing Types**: an optional type filter for the selected event.
+
+Triggers respond to native D&D5e damage application and direct Actor HP updates without firing twice for the same change. During combat, matching activities appear in an identifiable turn-style chat message for the actor's owners. Outside combat, matching activities execute directly.
 
 ## Overtime Effects
 
@@ -187,6 +173,8 @@ flags.bm5e.overtime
 
 When the change type is **BM5E**, the editor uses that key automatically.
 
+D&D5e displays this key as **Overtime**. Selecting another change type clears an automatically populated overtime key, and the BM5E change-summary icon opens the corresponding overtime editor directly.
+
 ### Activity Source
 
 The value determines what activity BM5E should roll:
@@ -195,7 +183,6 @@ The value determines what activity BM5E should roll:
 - `action=link` with `link=ACTIVITY_UUID` reuses an existing activity.
 - Created editor activities are stored on the actor's hidden overtime item.
 - An item-owned activity with the **BM5E Overtime** activation cost is a standalone overtime activity. Its editor stores configuration directly on that activity.
-- Activities with the **Is Damaged** activation cost create an activation card when their actor takes damage during combat; out-of-combat damage does not trigger them.
 
 Supported pseudo activity types:
 
@@ -240,8 +227,6 @@ Aliases include `start`, `end`, `sourceStart`, `sourceEnd`, `eachStart`, `eachEn
 - `heal=1d8` sets healing.
 - `healType=healing` or `healType=temphp` sets healing type.
 - `onSave=half`, `onSave=full`, or `onSave=none` controls save damage.
-- magical=true marks the generated overtime activity as magical. For linked activities, this is an override relative to the linked item's magical property.
-- Automated Conditions 5e v14.533.15 or newer uses this flag when evaluating whether the activity is magical.
 
 ### Outcome Fields
 

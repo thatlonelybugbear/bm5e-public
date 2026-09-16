@@ -1,3 +1,30 @@
+## v14.602.1
+* Updated BM5e for D&D5e v6.0 and dropped v5.x compatibility.
+  * Updated chat-message, target, activity, damage, healing, enchantment, and overtime handling for the D&D5e 6 data model.
+  * Updated Active Effect changes to use `effect.system.changes`, stable change IDs, and the new `EffectChangeConfig` application.
+* Fixed hot-reload registration issues.
+* Added roll controls to existing compact system chat messages:
+  * Attack, save, and check rolls can be rerolled with Advantage, Normal, or Disadvantage.
+  * Damage and healing rolls can be rerolled as Normal or Critical, including every damage part belonging to an activity.
+  * Compact save summaries provide a reroll control for each target.
+  * Rerolls update the existing message, retain the initial total and target DC, track reroll counts, and refresh success or failure.
+* Added labels to compact chat-card Attack, Damage, Save, and Check controls.
+* Added hit/miss coloring for attack controls and Advantage/Critical coloring for reroll options.
+* Relinked configurable chat document double-click handling for actor names, target pills, item icons, activity icons, and effect icons, with image fallback when the user cannot open the document.
+* Added a configurable chat document double-click handling for the chat message flavor text, with image fallback when the user cannot open the document.
+* Added the BM5e Triggers activity activation type and editor for Damaged and Healed events, resulting HP percentage conditions, and damage or healing type filters. Triggered activities use identifiable turn-style chat messages in combat and execute directly outside combat.
+* Added integrated mutable-damage automations for Death Ward, Undying Sentinel, and Undead Fortitude (select the ones you want in the module settings). When multiple protections are present, BM5e resolves Death Ward, then Undying Sentinel, then Undead Fortitude. Undying Sentinel triggers only while its item has uses available.
+* Added an independent Integrated Damage Modifiers multiselect, currently offering Elemental Adept. Matching spell damage ignores resistance when the caster owns an `elemental-adept` item named with its damage type, such as `Elemental Adept (Fire)`.
+* Updated the BM5e Active Effect value-editor controls to be compatible with the new system change editor, including direct access from BM5e change summary icons.
+* Displayed the `flags.bm5e.overtime` attribute as `Overtime` and cleared that automatically populated key when another change type is selected.
+* Matched the damage RESTORE button to the compact system APPLY button.
+* Deferred save-based damage multipliers to the native system damage application tray.
+* Kept detailed Attack and Damage roll results in button tooltips to avoid crowding compact chat cards.
+* Deferred concentration and exhaustion condition management to the system and constrained the Status HUD palette to the viewport while preserving HUD scaling.
+* Replaced BM5e prototype bookkeeping properties with private WeakMap state without changing libWrapper registrations or fallback method replacements.
+
+* Undead Fortitude save rerolls update the save message but do not retroactively revise damage that has already been applied.
+
 ## v14.533.4
 * Activities that trigger when their actor takes damage now create their card correctly during combat.
 * The activity BM5E Editor now properly shows only when the activity cost is set to Overtime.
