@@ -1,5 +1,6 @@
 ## v14.603.2
-* Added interactive Prone status icons that stand the token up and record half its walking speed in combat movement history; `flags.bm5e.standingCost` can override the cost in grid spaces.
+* Added interactive Prone status icons that stand the token up and record half its walking speed in combat movement history; 
+  * `flags.bm5e.standingCost` on an Actor can override the cost in grid spaces (for example, `2` costs 10 feet on a 5-foot grid).
 * Fixed Status HUD exhaustion icons for the D&D5e v6 API.
 * Made libWrapper a required dependency and removed obsolete optional fallback handling.
 
