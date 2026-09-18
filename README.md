@@ -142,7 +142,7 @@ When **Enable Status HUD Sorting** is enabled, BM5E replaces the token status pa
 - Unknown or custom active effects are kept visible and sorted after known statuses.
 - Exhaustion uses dnd5e's exhaustion image for the actor's current exhaustion level.
 - Concentration and exhaustion keep their dnd5e management behavior.
-- Clicking an active Prone icon on a token stands it up and records half its walking speed in the current combat turn's movement history. Set the actor flag `flags.bm5e.standingCost` to override that cost in grid spaces; for example, `2` costs 10 feet on a 5-foot grid.
+- When **Automate Standing from Prone (RAW)** is enabled, clicking an active Prone icon on a token stands it up and records half its walking speed in the current combat turn's movement history. The creature must have enough movement remaining. Set the actor flag `flags.bm5e.standingCost` to override that cost in grid spaces; for example, `2` costs 10 feet on a 5-foot grid.
 
 **Status Effects sorting** controls whether the grid fills by rows or by columns. **Number of columns** controls the grid width. **HUD scale** scales the palette and adjusts against canvas zoom. **Enable status filter** adds a search box, Escape clears or closes the palette, Enter applies the first visible match, and **Clear effects** removes current actor statuses and custom HUD effects.
 
