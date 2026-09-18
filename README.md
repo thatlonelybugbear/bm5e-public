@@ -46,6 +46,10 @@ BM5E extends existing compact D&D5e chat messages without creating replacement r
 - Reroll controls are available only when the current user can update the roll message.
 - Compact Attack, Damage, Save, and Check controls receive visible text labels.
 - Attack controls indicate hits and misses, while Advantage and Critical options use the system success color.
+<img width="292" height="168" alt="labels" src="https://github.com/user-attachments/assets/5e899d87-dcf8-4713-8cc2-b1be5ea0f363" />
+<img width="290" height="257" alt="attackReroll" src="https://github.com/user-attachments/assets/f45e61f7-4887-4f6c-b717-ac4d8e178f9b" />
+<img width="284" height="259" alt="damageReroll" src="https://github.com/user-attachments/assets/18d14ecf-f6a2-4c1f-81db-a252ec66673d" />
+
 
 ### Auto Roll Damage
 
@@ -101,6 +105,8 @@ The **Mutable Damage Automations** multiselect is available when **Mutable Damag
 - Rolls a configurable Constitution saving throw against DC 5 plus the damage taken.
 - On a success, the actor drops to 1 HP instead of 0 HP.
 - Rerolling the save updates its chat message but does not retroactively revise damage already applied.
+[bm5e602.webm](https://github.com/user-attachments/assets/70200430-9a2f-4679-be3e-ac37bfceef27)
+
 
 #### Standard Damage Automations
 
@@ -143,6 +149,9 @@ When **Enable Status HUD Sorting** is enabled, BM5E replaces the token status pa
 - Exhaustion uses dnd5e's exhaustion image for the actor's current exhaustion level.
 - Concentration and exhaustion keep their dnd5e management behavior.
 - When **Automate Standing from Prone (RAW)** is enabled, clicking an active Prone icon on a token stands it up and records half its walking speed in the current combat turn's movement history. The creature must have enough movement remaining. Set the actor flag `flags.bm5e.standingCost` to override that cost in grid spaces; for example, `2` costs 10 feet on a 5-foot grid.
+
+[standFromProne.webm](https://github.com/user-attachments/assets/0f133752-0397-4f56-87da-4d2c23efbf49)
+
 
 **Status Effects sorting** controls whether the grid fills by rows or by columns. **Number of columns** controls the grid width. **HUD scale** scales the palette and adjusts against canvas zoom. **Enable status filter** adds a search box, Escape clears or closes the palette, Enter applies the first visible match, and **Clear effects** removes current actor statuses and custom HUD effects.
 
