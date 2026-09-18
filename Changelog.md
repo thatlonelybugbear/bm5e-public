@@ -1,3 +1,18 @@
+## v14.603.2
+* Added interactive Prone status icons that stand the token up and record half its walking speed in combat movement history; `flags.bm5e.standingCost` can override the cost in grid spaces.
+* Fixed Status HUD exhaustion icons for the D&D5e v6 API.
+* Made libWrapper a required dependency and removed obsolete optional fallback handling.
+
+## v14.603.1
+* Expanded BM5e Activation Triggers with Attacked and Movement events.
+* Added independent trigger options to automatically target the triggering creature, bypass activity configuration, and automatically roll the activity.
+* Triggered activities now create identifiable chat messages both during and outside combat, and can wait for user input before rolling.
+* Limited the Activation Triggers editor to one window per activity.
+* Preserved the triggering target across triggered Attack, Damage, Healing, Save, and Check activities.
+* Exposed completed Movement-trigger distance, scene grid distance, and floored grid intervals traveled to roll formulas as `@bm5e.distanceTraveled`, `@bm5e.gridDistance`, and `@bm5e.gridDistanceTraveled`.
+* Added Massive Damage as a standard damage automation. It applies only when no zero-HP mutable automation leaves the actor at 1 HP.
+* Renamed the damage integration settings to Standard Damage Automations and Mutable Damage Automations and sorted their options by name.
+
 ## v14.602.1
 * Updated BM5e for D&D5e v6.0 and dropped v5.x compatibility.
   * Updated chat-message, target, activity, damage, healing, enchantment, and overtime handling for the D&D5e 6 data model.
