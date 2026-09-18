@@ -105,6 +105,7 @@ The **Mutable Damage Automations** multiselect is available when **Mutable Damag
 - Rolls a configurable Constitution saving throw against DC 5 plus the damage taken.
 - On a success, the actor drops to 1 HP instead of 0 HP.
 - Rerolling the save updates its chat message but does not retroactively revise damage already applied.
+
 [bm5e602.webm](https://github.com/user-attachments/assets/70200430-9a2f-4679-be3e-ac37bfceef27)
 
 
