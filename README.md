@@ -10,8 +10,8 @@ The current release requires Foundry VTT 14 and D&D5e 6.0.2 or newer.
 
 - [Module Settings](#module-settings): chat icon double-clicks, damage automation, mutable damage hooks, chat popouts, and status HUD sorting.
 - [Chat Roll Controls](#chat-roll-controls): compact-card labels and in-place rerolls.
-- [Integrated Damage Features](#integrated-damage-features): Death Ward, Undying Sentinel, Undead Fortitude, and Elemental Adept.
-- [Activation Triggers](#activation-triggers): damage and healing triggered activities.
+- [Damage Automations](#damage-automations): Death Ward, Undying Sentinel, Undead Fortitude, Elemental Adept, and Massive Damage.
+- [Activation Triggers](#activation-triggers): damage, healing, attack, and movement triggered activities.
 - [Overtime Effects](#overtime-effects): automatic combat and encounter activity triggers from Active Effects.
 - [Enchantments](#enchantments): chat-card target and item selection for dnd5e enchantment activities.
 
@@ -57,7 +57,7 @@ For non-attack damage activities, BM5E can roll damage after the activity use. P
 
 ### Mutable Damage Calculation
 
-Enable **Mutable Damage Calculation** only while libWrapper is active. The setting reloads the world and provides mutable `dnd5e.preCalculateDamage` and `dnd5e.calculateDamage` hook context required by automations such as Death Ward, Undying Sentinel, and Undead Fortitude.
+Enable **Mutable Damage Calculation** to provide mutable `dnd5e.preCalculateDamage` and `dnd5e.calculateDamage` hook context required by automations such as Death Ward, Undying Sentinel, and Undead Fortitude. libWrapper is a required BM5E dependency.
 
 The post-calculation context includes `damageAfterTempHP`, `wouldDropToZero`, `remainingDamage`, `killedOutright`, and `dropToOneHP()`.
 
@@ -77,9 +77,9 @@ Hooks.on('dnd5e.preCalculateDamage', (actor, _damages, _options, context) => {
 });
 ```
 
-### Integrated Damage Features
+### Damage Automations
 
-The **Integrated Damage Features** multiselect is available when **Mutable Damage Calculation** is enabled. BM5E resolves enabled lethal-damage protections in this order: Death Ward, Undying Sentinel, then Undead Fortitude. Only one protection resolves for each damage application.
+The **Mutable Damage Automations** multiselect is available when **Mutable Damage Calculation** is enabled. BM5E resolves enabled lethal-damage protections in this order: Death Ward, Undying Sentinel, then Undead Fortitude. Only one protection resolves for each damage application.
 
 #### Death Ward
 
@@ -102,15 +102,17 @@ The **Integrated Damage Features** multiselect is available when **Mutable Damag
 - On a success, the actor drops to 1 HP instead of 0 HP.
 - Rerolling the save updates its chat message but does not retroactively revise damage already applied.
 
-#### Integrated Damage Modifiers
+#### Standard Damage Automations
 
-The independent **Integrated Damage Modifiers** multiselect does not require **Mutable Damage Calculation** or libWrapper.
+The **Standard Damage Automations** multiselect does not require **Mutable Damage Calculation** or libWrapper.
 
 The Elemental Adept integration applies when the caster owns an item with the `elemental-adept` identifier and its name ends with the damage type, such as `Elemental Adept (Fire)`.
 
 - Applies only to spells.
 - Ignores matching damage resistance, but not immunity.
 - Does not implement the rule that treats matching damage-die results of 1 as 2. That behavior can be configured with Automated Conditions 5e.
+
+The Massive Damage integration marks all three death saving throw failures when damage reduces an actor to 0 HP and the remaining damage equals or exceeds its maximum HP. It runs only when no enabled zero-HP protection leaves the actor at 1 HP.
 
 ### Auto Popout
 
@@ -140,6 +142,7 @@ When **Enable Status HUD Sorting** is enabled, BM5E replaces the token status pa
 - Unknown or custom active effects are kept visible and sorted after known statuses.
 - Exhaustion uses dnd5e's exhaustion image for the actor's current exhaustion level.
 - Concentration and exhaustion keep their dnd5e management behavior.
+- Clicking an active Prone icon on a token stands it up and records half its walking speed in the current combat turn's movement history. Set the actor flag `flags.bm5e.standingCost` to override that cost in grid spaces; for example, `2` costs 10 feet on a 5-foot grid.
 
 **Status Effects sorting** controls whether the grid fills by rows or by columns. **Number of columns** controls the grid width. **HUD scale** scales the palette and adjusts against canvas zoom. **Enable status filter** adds a search box, Escape clears or closes the palette, Enter applies the first visible match, and **Clear effects** removes current actor statuses and custom HUD effects.
 
@@ -151,15 +154,20 @@ The status palette is constrained to the visible viewport and gains vertical scr
 
 ## Activation Triggers
 
-The **BM5E Triggers** activity activation type runs an activity after its actor is damaged or healed.
+The **BM5E Triggers** activity activation type runs an activity in response to damage, healing, attacks, or movement.
 
 Open the trigger editor from the activity's Activation Cost controls, then configure:
 
-- **Event**: Damaged or Healed.
+- **Event**: Damaged, Healed, Attacked, or Movement.
 - **Only when HP is**: an optional resulting-HP percentage comparison.
 - **Damage Types** or **Healing Types**: an optional type filter for the selected event.
+- **Automatically target the triggering creature**: targets the creature that caused the event, or the moved creature for Movement.
+- **Bypass configuration dialog**: skips activity configuration choices.
+- **Automatically roll activity**: immediately uses the activity after creating its Triggered chat message. When disabled, the message waits for user input.
 
-Triggers respond to native D&D5e damage application and direct Actor HP updates without firing twice for the same change. During combat, matching activities appear in an identifiable turn-style chat message for the actor's owners. Outside combat, matching activities execute directly.
+Triggers respond to native D&D5e damage application and direct Actor HP updates without firing twice for the same change. Matching activities appear in an identifiable Triggered chat message both during and outside combat.
+
+Movement triggers expose the completed movement distance as `@bm5e.distanceTraveled`, the scene's grid distance as `@bm5e.gridDistance`, and the floored number of grid intervals moved as `@bm5e.gridDistanceTraveled`. Distance values use the scene's units and include all completed movement segments. For example, `(@bm5e.gridDistanceTraveled)d4` rolls one d4 per complete grid interval moved.
 
 ## Overtime Effects
 
