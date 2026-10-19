@@ -1,3 +1,69 @@
+## v14.606.1
+
+- Compatibility and settings
+  - Updated compatibility for D&D5e 6.0.6.
+  - Grouped settings into **Chat & Rolls**, **Token HUD**, **Damage Mechanics**, **Conditions & Effects**, and **Troubleshooting**. Menus save changes immediately; close them with the window's X. Existing preferences are preserved.
+  - All Chat & Rolls preferences are now per-user, without a GM master switch or reload requirement. Label, reroll-control, and result-display changes refresh existing chat cards and popouts. Users without a saved label preference inherit the previous world setting.
+  - Token HUD settings update an open HUD immediately and preserve unrelated effect changes.
+- Chat cards and rolls
+  - Attack, Save, and Check Rerolls switch between **Advantage / Normal / Disadvantage** while retaining the rolled d20 results, including after reload. Extra dice are rolled only when needed; Normal shows the first die and keeps the others available for later switches.
+  - **Shift-click** a dice-icon reroll control to roll fresh dice using the current advantage mode, or the current Normal/Critical damage mode. Fresh d20 rolls replace the stored pool without applying advantage twice. Controls remain limited to messages you can update.
+  - Rerolls preserve modifiers, critical/fumble thresholds, and the original total in their history. Concentration rerolls retain the concentration DC instead of using the originating spell's save DC.
+  - Attack rerolls refresh hit/miss colors, tooltips, and existing per-target damage multipliers, including after reload. Save and Check labels turn green once a visible roll has been made, when result display is enabled.
+  - Attack and Damage tooltips show numbered roll history, per-target outcomes, and damage modes. Replacing a roll updates its existing entry. Clicking Damage creates a new roll without a Reroll/Replace dialog; dice-icon controls update existing rolls.
+  - Combined chat-card popouts refresh when associated attack or damage messages change, including rerolls from other clients. Individual popouts also rebuild their damage and effect target trays correctly.
+  - Preserved AC5e tooltip visibility preferences and native weapon mastery links used by WM5e.
+  - Added item-icon double-click support to Triggered and Overtime activity lists.
+- Damage and effect application
+  - Players can record and restore damage, and record effect Apply/Remove actions, on another user's chat cards through the active GM. Records are limited to owned actors and preserve other recipients' entries.
+  - Damage and effect controls respect the system's player-tray settings and actor ownership. Damage Apply is hidden when there are no owned targets; Restore lists only permitted records. Changing player-tray settings refreshes existing cards immediately.
+  - Fixed damage-tray crashes when mutable calculations return damage parts without trait metadata, including parts added by Midi-QOL.
+  - Fixed healing dealing damage with **Midi-QOL** when Mutable Damage Calculation is enabled. Native healing, defenses, and multipliers are processed before Midi adjustments, including its noCalc path.
+  - Midi damage/healing triggers now follow actual HP changes, including manual card applications. Healing and temporary HP gains do not trigger Damaged. **Reverse / Reverse All** restore HP without firing Damaged, Healed, or outgoing Damages triggers; normal reapplications still trigger.
+- Arcane Ward
+  - Added **2014 and 2024 Arcane Ward** support. An owned item with the identifier `arcane-ward` displays current/maximum ward HP and resets after a Long Rest.
+  - **2014:** level 1+ Abjuration spells create or replenish the ward, including rituals and slotless casts. The ward absorbs damage before the Wizard's defenses apply to overflow.
+  - **2024:** Abjuration spells replenish the ward when a spell slot is consumed; its Bonus Action activity can also consume a slot to replenish it. Resistance and vulnerability apply before absorption; immunity applies to overflow. Slot tracking includes Mage Armor casts.
+  - Hover previews show each target's absorption, remaining damage, and ward HP while preserving native token highlighting. Previews refresh after rerolls and rebuild after reload.
+  - Restore returns the ward HP spent by that application, even when the ward absorbed all damage. Application records survive reload and remain available after damage rerolls; Restore appears only after an application is recorded.
+- Activation triggers
+  - Added outgoing **Damages** and **Attacks** events, outgoing damage-type filters, and source item-type filters for damage, healing, and attack events.
+  - Added **In Range** emanations that trigger on source/in-range token turn starts or ends, or when tokens move in or out. Target filters and per-token turn limits apply, including in encounters not linked to a scene.
+  - In Range's **Total triggers before removal** deletes the emanation after a configured number of trigger offers across all tokens and turns. Zero means unlimited; filtered or unavailable activities do not count. The counter persists, and the editor uses compact number fields and keeps changes in sync with the current activity.
+  - Reorganized the editor into Trigger, Behaviours, and Toggle Filters. Disabled filters and damage reductions retain their configured values. Actor/opponent HP filters are independent, size/type filters apply per opponent, and attack events support damage-type filtering. All enabled filters must match; multiple choices within one filter match any selected value. Existing HP filters retain their original subject.
+  - Added an **All / Hit / Miss** filter for outgoing attacks, evaluated per target. Existing triggers default to All; unknown outcomes do not match Hit or Miss.
+  - Trigger offers, automatic selections, and incoming damage-reduction prompts skip activities whose configured resources are unavailable, without spending resources during the check. Actual use still validates consumption.
+  - Added trigger roll data: `@bm5e.damageRolled.total` (before defenses), `@bm5e.damageIncoming.total` (before trigger reductions), `@bm5e.damageDealt.total` (after reductions), and `@bm5e.damageApplied.total` (actual HP + temporary HP lost). The first three also expose damage-type values, such as `@bm5e.damageIncoming.fire` and `@bm5e.damageDealt.necrotic`; `@bm5e.damageApplied.hpLost` and `@bm5e.damageApplied.tempHpLost` separate the applied losses. Damage context remains available on trigger and usage messages after reload. The README includes per-type formula examples.
+  - Added **Ghostly Command** to the Overtime Test Items compendium: a prompted reduction of half the incoming damage, rounded up, capped at 10. Requires Mutable Damage Calculation and filters for Weapon/Spell sources. Declining or lacking resources leaves damage unchanged; healing does not trigger it. Reaction costs and timing remain manual.
+  - **Forced Movement** is available only with BAA5E active and requires an explicit forced-movement marker. Existing configurations remain disabled without BAA5E; ordinary movement cannot trigger this event on its own.
+- Enchantments
+  - Checked recipients are processed sequentially with actor-labelled **Apply / Skip / Cancel Remaining** choices, including GM requests. Recipient counts and enchanted-item limits remain enforced; applied entries show Item (Actor).
+  - Added an optional **Preferred item identifier**. A unique compatible match is selected automatically; multiple matches are prioritized in the picker. Normal selection and manual item drops remain available.
+  - Trays are visible to GMs, source-actor owners, and owners of recorded targets. Target owners see only their own recipients. Without recorded targets, only GMs and source owners have access; another client's selected token or message authorship does not grant access.
+  - Compact cards use the native icon-style Targeted/Selected toggle and compact target rows. These features use the existing **Enable enchantment handling** setting.
+- Grapple escapes
+  - Added optional **Grapple mechanics**. Click an owned actor's Grappled token icon to attempt a 2014 contested or 2024 DC-based escape. The active GM handles opposing rolls and effect removal; spending the action remains manual. In 2024, grapples also end when the grappler becomes Incapacitated or the tokens move out of range.
+  - When an escape DC cannot be resolved, the active GM receives a DC-only prompt before the player chooses Acrobatics or Athletics. **Set** saves the DC and closes without requesting a roll; **Request Escape** saves it and continues. Invalid DCs keep the dialog open; X cancels. Concurrent requests for the same effect share one prompt.
+  - The saved DC is reused for later attempts. The active GM can right-click Grappled to edit it.
+  - Active player owners receive escape requests in chat and choose **Acrobatics / Athletics**. The GM rolls locally when no player owner is active. Closing a roll-choice dialog cancels the attempt.
+  - Escape checks retain their effect and attempt references. Rerolling either check reevaluates an unresolved escape without recreating deleted effects or undoing previously applied changes. The active GM must be connected.
+  - Grappled effects retain their source and icon, including when applied by activities. Grapple tracking avoids scanning every scene on movement.
+- Prone and Falling
+  - Prone and Grappled token-icon controls work on the initial scene draw after reload.
+  - Prone movement handling avoids duplicate updates and preserves the previous movement action when a token is already crawling.
+  - GMs can right-click Falling to land harmlessly at the system's landing elevation and level, without a damage card. Left-click still plummets; harmless landing currently has no animation.
+  - Added an optional setting to refresh linked actors' shared Falling status when a scene loads. The system's **Disable Falling** setting prevents these checks and related updates.
+
+## v14.603.3
+
+- Combined weapon Use, Attack and Damage rolls with their application trays in the originating use chat card, hiding the separate roll messages.
+- Updated damage multipliers and effect application targets per attack outcome: missed targets receive no damage and are deselected for effects.
+- Fixed damage restoration so APPLIED returns to APPLY after RESTORE, and added APPLY/APPLIED and REMOVE/REMOVED controls for effect application.
+- Preserved Automated Conditions 5e roll attribution tooltips on BM5E reroll dice controls.
+- Fixed chat target double-clicks to open the target actor sheet when permitted or its token image otherwise, and removed attacker-token hover and double-click behavior from empty roll summary areas.
+- Renamed the Prone setting to **Implement Prone Mechanics**. Applying Prone selects Crawl; removing it restores each token's previous movement action or selects its fastest available action. Clicking the Prone icon still spends the required movement to stand.
+- Fixed Status HUD Clear Effects to remove active status effects through the D&D5e v6 API.
+
 ## v14.603.2
 * Added interactive Prone status icons that stand the token up and record half its walking speed in combat movement history; 
   * `flags.bm5e.standingCost` on an Actor can override the cost in grid spaces (for example, `2` costs 10 feet on a 5-foot grid).
