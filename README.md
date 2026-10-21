@@ -1,11 +1,12 @@
-# Bugbear's Mechanics for 5e for v13 and v14.
+# Bugbear's Mechanics for 5e
 
 Bugbear's Mechanics is a Foundry VTT module which introduces some highly opinionated system mechanics.
 
-[Showcase video](https://github.com/user-attachments/assets/7d135cea-8e2b-4143-96b3-af81690d9e64)
+Requires Foundry VTT 14.367+ (v14), D&D5e 6.0.2+, and libWrapper. Verified with Foundry 14.369 and D&D5e 6.0.6.
 
 ## Table of Contents
 
+- [Installation and License](#installation-and-license): installation, the upcoming Patreon integration, and permitted use.
 - [Module Settings](#module-settings): chat icon double-clicks, damage automation, mutable damage hooks, chat popouts, and status HUD sorting.
 - [Chat Roll Controls](#chat-roll-controls): compact-card labels and in-place rerolls.
 - [Damage Automations](#damage-automations): Arcane Ward, Death Ward, Undying Sentinel, Undead Fortitude, Elemental Adept, and Massive Damage.
@@ -16,11 +17,17 @@ Bugbear's Mechanics is a Foundry VTT module which introduces some highly opinion
 - [Overtime Effects](#overtime-effects): automatic combat and encounter activity triggers from Active Effects.
 - [Enchantments](#enchantments): chat-card target and item selection for dnd5e enchantment activities.
 
+## Installation and License
+
+**Version 14.606.2 is the final release outside Foundry VTT's Patreon integration.** Install or update this version using the existing manifest link provided to supporters. Future releases will use Foundry VTT's Patreon integration and Protected Content system; installation instructions will be updated when that integration is available.
+
+You may continue using versions lawfully obtained during your subscription after it ends. Further updates require an active subscription or another entitlement that includes updates. Commercial games and streams are permitted with module credit and a Patreon link; see [LICENSE](<https://raw.githubusercontent.com/thatlonelybugbear/bm5e-public/refs/heads/main/LICENSE>) for the full terms.
+
 ## Module Settings
 
 Settings are grouped into **Chat & Rolls**, **Token HUD**, **Damage Mechanics**, **Conditions & Effects**, and **Troubleshooting** menus. Existing saved preferences are retained. These menus save changes immediately; close them with the window's X. Token HUD changes update an open HUD without saving the main Game Settings form.
 
-All **Chat & Rolls** preferences are per-user and require no GM master switch or client reload. Label, reroll-control, and result-display changes refresh existing chat cards and open message popouts immediately. Automation and pop-out preferences apply to subsequent uses; document permissions still govern rolls and activity use.
+**Chat & Rolls** preferences apply to your user, except **Compact combined cards**, which is saved on this client, and **Hide chat-card tags from players**, which is a GM-controlled world setting. These settings do not require a client reload. Label, reroll-control, and result-display changes refresh existing chat cards and open message popouts immediately. Automation and pop-out preferences apply to subsequent uses; document permissions still govern rolls and activity use.
 
 ### Module Support
 
@@ -43,7 +50,7 @@ BM5E adds double-click behavior to chat card document icons.
 
 BM5E extends existing compact D&D5e chat messages without creating replacement roll messages.
 
-Attack and Damage results, including their expandable rolls and application trays, appear inside the originating usage card. Their separate roll messages are hidden from the chat log.
+Attack and Damage results, including their expandable rolls and application trays, appear inside the originating usage card. Their separate roll messages are hidden from the chat log. This combined layout is bypassed while Midi-QOL is active.
 
 - Click an Attack, Save, or Check dice control to switch the existing roll between Advantage, Normal, and Disadvantage. Advantage keeps the higher stored d20, Disadvantage keeps the lower, and Normal displays only the first die. Missing extra dice are rolled once; stored results survive reloads and can be reused when switching back. Modifiers and critical/fumble thresholds are preserved.
 - **Shift-click** a dice control to roll fresh dice using its current Advantage, Normal, or Disadvantage mode, or its current Normal/Critical damage mode. Fresh d20 rolls replace the stored pool; later mode switches use the new results. The normal activity action creates a separate roll.
@@ -56,6 +63,13 @@ Attack and Damage results, including their expandable rolls and application tray
 - Reroll controls are available only when the current user can update the roll message.
 - **Show chat action labels** adds text labels to compact Attack, Damage, Save, and Check controls for your user. Users without a saved preference inherit the previous world label preference, or enabled when none was saved.
 - With labels enabled, these buttons share the available row width; Template and Resource controls remain compact icon buttons.
+- **Hide chat-card tags from players** is a world setting, disabled by default. GMs can enable it under **Chat & Rolls** to hide item and activity tags, such as weapon type, range, and proficiency, from players. GMs still see the tags, and changes apply immediately.
+- **Compact combined cards** is off by default and applies immediately on this client. Linked attack and damage results share a row. Target pills show hit/miss and expected damage, with multipliers just below. The checkmark beside damage applies it; after a recorded application, it opens **Apply again / Restore** when **Enable damage restoration** is enabled. The amount is separated from the target name for readability.
+- Click the chevron on an attack's dotted divider to fold it into a small **Attack 1**, **Attack 2**, etc. row; click the row to expand it. Automatic folding follows **Collapse Trays in Chat**, including collapse after application except in **Never Collapse** mode. Manual choices are remembered on this client.
+- Hold **Shift** to show a trash control beside an attack's chevron, whether expanded or collapsed. It deletes that attack and its paired damage together when you have permission to delete both. Separate damage entries retain their own delete control. Deleting a row does not restore damage already applied; use Restore first if needed.
+- Clicking the top **Damage** button again creates a separate damage entry without replacing an existing attack/damage pair. Separate damage uses the same right-hand result column and Apply/Restore checkmark. Use the damage row's reroll control to replace that roll. Ambiguous or shared damage stays separate from individual attacks.
+- Damage-history tooltips use the corresponding attack numbers and show **-** where damage has not been rolled. Separate damage entries follow afterward. Reroll menus outline the current advantage or critical mode.
+- When **Midi-QOL** is active, BM5E bypasses its combined and compact attack-card layout so Midi-QOL can manage its own cards.
 - **Show reroll controls** independently enables clickable dice controls and reroll menus for messages your user can update. Changing it refreshes existing cards and popouts without reloading.
 - **Show roll results on message buttons** controls Attack/Damage roll-history tooltips and green Save/Check indicators after a visible roll. It is separate from action labels.
 - Attack controls indicate hits, misses, critical hits, and fumbles, including after rerolls. Attack and Damage tooltips show numbered totals and outcomes or Normal/Critical damage modes.
@@ -64,7 +78,7 @@ Attack and Damage results, including their expandable rolls and application tray
 
 ### Auto Roll Damage
 
-When **Auto Roll Damage** is enabled and Midi-QOL is not active, BM5E listens for attack rolls. If the attack succeeds or crits, BM5E clicks the originating card's damage button automatically.
+When **Auto Roll Damage** is enabled and Midi-QOL is not active, BM5E listens for attack rolls. If the attack succeeds or crits, BM5E clicks the originating card's damage button automatically. If a reroll changes a miss into a hit, BM5E rolls any missing damage for that attack using its original targets, without duplicating existing linked damage.
 
 Clicking Attack or Damage again creates another roll and application tray without a Reroll/Replace dialog. Use the dice-icon controls to reroll a specific existing roll. Button tooltips use `Attack 1: 15 (Hit)` and `Damage 1: 7 (Normal)` entries; critical hits and fumbles retain their respective outcomes.
 
@@ -381,10 +395,10 @@ Save with each-failure and overall success:
 action=pseudo; pseudoType=save; turn=turnEnd; abilities=con|wis; dc=13; onEachFailure=poisoned; overallSuccessTarget=1; onSuccess=removeOvertime
 ```
 
-Linked activity:
+Linked activity (replace `ACTIVITY_UUID` with the UUID of the activity to use):
 
 ```text
-action=link; link=Scene.9gP78CMgo7ZmATt2.Token.3TjlspjtW1JPoYk1.Actor.KBYJmwlbPBToyRY9.Item.DgH1PglrwHrwf9zv.Activity.erT6fai51NJq3AQG; turn=turnStart; onFinalTrigger=removeOvertime; triggerTarget=3
+action=link; link=ACTIVITY_UUID; turn=turnStart; onFinalTrigger=removeOvertime; triggerTarget=3
 ```
 
 At the start and end of a creature's turn, if one or more overtime effects are present on the actor, BM5E creates a chat message showing the available overtime rolls. If Midi-QOL is active and Activation Cost Automation is set to Auto Trigger, these overtime effects are rolled automatically.
