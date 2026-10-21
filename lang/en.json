@@ -1,5 +1,22 @@
 {
 	"BM5E": {
+		"SettingsMenus": {
+			"chat": { "Name": "Chat & Rolls", "Hint": "Configure your chat interactions, roll tooltips, automatic damage rolls and popouts." },
+			"hud": { "Name": "Token HUD", "Hint": "Configure your token status sorting, scaling and filtering." },
+			"damage": { "Name": "Damage Mechanics", "Hint": "Configure damage application, calculation and integrated protection features." },
+			"conditions": { "Name": "Conditions & Effects", "Hint": "Configure Prone, Grappled, Falling, effect application and enchantments." },
+			"troubleshooting": { "Name": "Troubleshooting", "Hint": "Configure diagnostic logging." },
+			"DebugName": "Overtime Debug Logging",
+			"DebugHint": "Enable BM5E overtime debug logs. Can be combined with channel flags via globalThis.bm5e.debug."
+		},
+		"RefreshLinkedTokenFalling": {
+			"Name": "Re-evaluate Falling when the active scene loads",
+			"Hint": "The active GM refreshes shared Falling statuses using only linked tokens in the active scene when it loads. Keeps the system's last-moved token if it belongs to that scene; otherwise uses a linked token from that scene. This updates the system's last-moved token reference; statuses remain shared across scenes. Does nothing when the system's Disable Falling setting is enabled: no Falling checks, status changes, or last-moved token updates."
+		},
+		"HarmlessFalling": {
+			"Name": "Harmless Falling on Right-click",
+			"Hint": "Allow GMs to right-click the Falling icon to land without damage. Left-click retains normal falling damage."
+		},
 		"UI": {
 			"FilterEffects": "Filter effects...",
 			"ClearEffects": "Clear effects"
@@ -15,57 +32,157 @@
 		},
 		"BugbearsMechanics": "Bugbear's Mechanics",
 		"IntegratedDamageModifiers": {
-			"Name": "Integrated Damage Modifiers",
-			"Hint": "Choose which D&D 5e damage modifiers BM5E automates independently of Mutable Damage Calculation.",
-			"ElementalAdept": "Elemental Adept"
+			"Name": "Standard Damage Automations",
+			"Hint": "Choose which D&D 5e damage automations BM5E handles without requiring Mutable Damage Calculation.",
+			"ElementalAdept": "Elemental Adept",
+			"MassiveDamage": "Massive Damage"
+		},
+		"HideChatTagsFromPlayers": {
+			"Name": "Hide chat-card tags from players",
+			"Hint": "Hide item and activity tags (such as weapon type, range and proficiency) on all chat cards viewed by players. GMs still see the tags. Applies immediately."
+		},
+		"CompactCombinedCards": {
+			"Name": "Compact combined cards",
+			"Attack": "Attack {number}",
+			"Hint": "Show linked attack and damage rolls side by side, with target hit/miss indicators and damage previews in one row of pills, compact multiplier controls, and a checkmark beside damage for Apply and Restore actions. Applies immediately to this client."
 		},
 		"ChatDoubleClick": {
 			"Name": "Enable chat document double-clicks",
 			"Hint": "Double-click document icons and names in chat messages to open their sheets or images."
 		},
 		"ChatAction": {
+			"Enabled": {
+				"Name": "Show chat action labels",
+				"Hint": "Show text labels on compact Attack, Damage, Save, and Check buttons. Applies only to your user and updates immediately."
+			},
 			"Attack": "Attack",
+			"AttackHistory": "Attack {number}: {total} ({result})",
+			"DamageHistory": "Damage {number}: {total} ({result})",
+			"DamageHistoryEmpty": "Damage {number}: -",
+			"Normal": "Normal",
+			"AttackHistoryHeading": "Attack {number}: {total}",
+			"AttackHistoryTarget": "{name}: {result}",
+			"RolledTimes": "(Rolled: {count} times)",
+			"Hit": "Hit",
+			"Miss": "Miss",
+			"Critical": "Critical",
+			"Fumble": "Fumble",
+			"Unknown": "Unknown",
 			"Check": "Check",
 			"Damage": "Damage",
 			"Save": "Save"
 		},
 		"MutableDamageCalculation": {
 			"Name": "Mutable Damage Calculation",
-			"Hint": "Adds D&D 5e mutable damage-calculation hooks required by automations such as Undead Fortitude. Requires libWrapper and reloads the world when changed.",
+			"Hint": "Adds D&D 5e mutable damage-calculation hooks required by automations such as Arcane Ward and Undead Fortitude. Requires libWrapper and reloads the world when changed.",
 			"LibWrapperRequired": "BM5E mutable damage calculation requires libWrapper to be enabled.",
 			"Features": {
-				"Name": "Integrated Damage Features",
-				"Hint": "Choose which D&D 5e features BM5E automates during damage calculation.",
+				"Name": "Mutable Damage Automations",
+				"Hint": "Choose which D&D 5e damage automations BM5E handles using Mutable Damage Calculation.",
+				"ArcaneWard": "Arcane Ward",
 				"DeathWard": "Death Ward",
 				"UndyingSentinel": "Undying Sentinel",
 				"UndeadFortitude": "Undead Fortitude"
 			}
 		},
 		"DamageApplication": {
+			"ArcaneWardNote": "Arcane Ward absorbed {absorbed} damage. Damage applied: {applied}. Ward HP: {remaining}/{maximum}.",
+			"ArcaneWardPreview": "Arcane Ward would absorb {absorbed} damage. Remaining damage: {applied}. Ward HP afterward: {remaining}/{maximum}.",
 			"Enabled": {
 				"Name": "Enable damage restoration",
 				"Hint": "Record native D&D5e damage applications and add a Restore button to the damage tray."
 			},
 			"Applied": "Applied",
+			"ApplyAgain": "Apply again",
+			"AppliedActions": "Applied: Apply again / Restore",
 			"Restore": "Restore",
 			"Restored": "Restored"
+		},
+		"EffectApplication": {
+			"Remove": "Remove",
+			"Removed": "Removed"
 		},
 		"EffectApplicationOutcomes": {
 			"Name": "Deselect effect targets by roll outcome",
 			"Hint": "Automatically deselect missed attack targets and targets that succeed on saving throws from effect application trays."
 		},
+		"StandingFromProne": {
+			"Name": "Implement Prone Mechanics",
+			"Hint": "Applying Prone selects Crawl for the actor's tokens. Removing Prone restores their previous movement action, or selects their fastest available action. Click a token's Prone icon to stand, spending half its walking speed; enough movement must remain."
+		},
+		"Grapple": {
+			"Setting": {
+				"Name": "Implement Grapple Mechanics",
+				"Hint": "Actor owners and the active GM can click a token's Grappled icon to roll an escape using the configured 2014 or 2024 rules. The active GM can right-click to set or edit the escape DC. Under 2024 rules, grapples also end when the grappler is Incapacitated or moves out of range."
+			},
+			"Escape": "Escape a Grapple",
+			"Grappler": "Grappler",
+			"Skill": "Skill",
+			"DC": "Escape DC",
+			"DCPlaceholder": "If no grappler",
+			"Roll": "Roll",
+			"Cancel": "Cancel",
+			"NoSource": "The grappler could not be resolved from this effect.",
+			"NoDC": "The grapple's escape DC could not be resolved.",
+			"Continue": "Continue",
+			"SetDC": "Set Escape DC",
+			"SetDCButton": "Set",
+			"RequestEscape": "Request Escape",
+			"NoGM": "An active GM is required to set this grapple's escape DC."
+		},
 		"ActivationTriggers": {
+			"ToggleBehaviours": "Toggle Behaviours",
+			"Trigger": "Trigger",
+			"Behaviours": "Behaviours",
+			"ToggleFilters": "Toggle Filters",
+			"ActorHP": "Activity actor HP",
+			"HPFilters": "HP Filters",
+			"OpponentHP": "Opponent HP",
+			"HPFiltersHint": "Compare current HP to maximum HP, excluding temporary HP. Activity actor is the owner of this triggered activity; opponent is each creature involved in the event. Movement has no opponent.",
 			"Title": "BM5E Activation Triggers",
 			"Triggers": "Triggers",
 			"Event": "Event",
 			"Damaged": "Damaged",
+			"Damages": "Damages",
 			"Healed": "Healed",
+			"Attacked": "Attacked",
+			"Attacks": "Attacks",
+			"AttackOutcome": "Attack outcome",
+			"AttackOutcomeAll": "All",
+			"AttackOutcomeHit": "Hit",
+			"AttackOutcomeMiss": "Miss",
+			"InRange": "In Range",
+			"ForcedMovement": "Forced Movement",
+			"Movement": "Movement",
+			"AutoTarget": "Automatically target the other creature",
+			"AutoTargetHint": "Receiver events target the source creature. Source events target the affected creature. Movement and In Range target the triggering token.",
+			"BypassConfigure": "Bypass configuration dialog",
+			"BypassConfigureHint": "Skips activity configuration choices such as advantage, scaling, and resource options.",
+			"AutoRoll": "Automatically roll activity",
+			"AutoRollHint": "Creates the Triggered chat message and immediately uses the activity. Otherwise, wait for a user to select it.",
 			"TriggeredEvent": "Triggered: {event}",
 			"HitPoints": "Only when HP is",
 			"Operator": "Operator",
 			"HPPercentage": "HP Percentage",
 			"DamageTypes": "Damage Types",
+			"DamageReduction": "Reduce Incoming Damage",
+			"DamageReductionHint": "Formula for one reduction budget. Selected damage types share it; no types selected means all damage types. Requires Mutable Damage Calculation.",
+			"ReduceDamagePrompt": "Use {activity} to reduce this damage?",
 			"HealingTypes": "Healing Types",
+			"ItemTypes": "Source Item Types",
+			"InRangeEvents": "Trigger Events",
+			"SourceTurnStart": "Source Turn Start",
+			"SourceTurnEnd": "Source Turn End",
+			"TargetTurnStart": "In-range Token Turn Start",
+			"TargetTurnEnd": "In-range Token Turn End",
+			"TargetMoveIn": "Token Moves In",
+			"TargetMoveOut": "Token Moves Out",
+			"TriggersPerTokenTurn": "Triggers per Token/Turn",
+			"DeleteAfterTriggers": "Total triggers before removal",
+			"DeleteAfterTriggersHint": "Delete this emanation after this many trigger offers across all tokens and turns, including outside combat. Each eligible token counts separately, even if its offered activity is not used. Set to 0 for no limit.",
+			"Sizes": "Opponent Sizes",
+			"CreatureTypes": "Opponent Types",
+			"IncludeSource": "Include the source token",
 			"Save": "Save"
 		},
 		"EnableStatusHUDSorting": {
@@ -148,9 +265,13 @@
 			"ScorchingRay": "Scorching Ray",
 			"MagicMissile": "Magic Missile"
 		},
+		"RerollControls": {
+			"Name": "Show reroll controls",
+			"Hint": "Show clickable dice buttons and reroll menus on chat rolls you can update. Applies only to your user and updates immediately."
+		},
 		"ChatMessagesTooltips": {
 			"Name": "Show roll results on message buttons",
-			"Hint": "When enabled, the Attack and Damage buttons in chat messages will show roll results."
+			"Hint": "Show Attack and Damage roll history in button tooltips and mark rolled Save and Check buttons. Applies only to your user and updates immediately."
 		},
 		"EffectsEditor": {
 			"Title": "BM5E Effect Editor",
@@ -263,12 +384,21 @@
 				"Name": "Allow enchantment stacks",
 				"Hint": "Bugbear's Mechanics 5e addition. Allow this enchantment to be applied to the same item more than once."
 			},
+			"PreferredItem": {
+				"Name": "Preferred item identifier",
+				"Hint": "When choosing an item on a target actor from chat, automatically select a single compatible item with this identifier. Multiple matches appear first in the picker; no match uses the usual picker. Dropping another compatible item remains allowed. Leave blank for normal selection."
+			},
 			"MaximumItems": {
 				"Name": "Maximum enchanted items",
 				"Hint": "Bugbear's Mechanics 5e addition. The number of different items this enchantment can affect at once. Defaults to 1. Use 0 for unlimited.",
 				"Reached": "This enchantment has reached its maximum number of enchanted items."
 			},
-			"Unauthorized": "Only the target owner or the enchantment user can apply this enchantment."
+			"ChooseRecipients": "Choose at least one targeted or selected token before choosing items to enchant.",
+			"PickerTitle": "Apply Enchantment: {actor}",
+			"Skip": "Skip",
+			"CancelRemaining": "Cancel Remaining",
+			"TargetLimitReached": "This use has reached the activity's maximum number of recipients.",
+			"Unauthorized": "Only the target owner, source actor owner, or a GM can apply this enchantment."
 			}
 		}
 	}
