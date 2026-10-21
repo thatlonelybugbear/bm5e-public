@@ -1,5 +1,22 @@
 {
 	"BM5E": {
+		"SettingsMenus": {
+			"chat": { "Name": "Chat e Rolagens", "Hint": "Configure as interações do chat, as dicas das rolagens, as rolagens automáticas de dano e as janelas destacadas." },
+			"hud": { "Name": "HUD do Token", "Hint": "Configure a ordenação, a escala e a filtragem dos status dos tokens." },
+			"damage": { "Name": "Mecânicas de Dano", "Hint": "Configure a aplicação e o cálculo de dano, além das características de proteção integradas." },
+			"conditions": { "Name": "Condições e Efeitos", "Hint": "Configure as condições Caído, Agarrado e Em Queda, além da aplicação de efeitos e encantamentos." },
+			"troubleshooting": { "Name": "Solução de Problemas", "Hint": "Configure os registros de diagnóstico." },
+			"DebugName": "Registro de Depuração de Overtime",
+			"DebugHint": "Ativa os registros de depuração de Overtime do BM5E. Pode ser combinado com flags de canais por meio de globalThis.bm5e.debug."
+		},
+		"RefreshLinkedTokenFalling": {
+			"Name": "Reavaliar a Condição Em Queda ao Carregar a Cena Ativa",
+			"Hint": "O Mestre ativo atualiza os status compartilhados de Em Queda utilizando apenas os tokens vinculados presentes na cena ativa quando ela é carregada. Mantém o último token movido registrado pelo sistema se ele pertencer à cena; caso contrário, utiliza um token vinculado dessa cena. Isso atualiza a referência ao último token movido do sistema; os status permanecem compartilhados entre as cenas. Não realiza nenhuma ação quando a configuração Desativar Quedas do sistema está ativada: nenhuma verificação de queda, alteração de status ou atualização do último token movido é realizada."
+		},
+		"HarmlessFalling": {
+			"Name": "Queda Sem Dano com Clique Direito",
+			"Hint": "Permite que os Mestres cliquem com o botão direito no ícone Em Queda para aterrissar sem sofrer dano. O clique esquerdo mantém o dano normal de queda."
+		},
 		"UI": {
 			"FilterEffects": "Filtrar Efeitos...",
 			"ClearEffects": "Limpar Efeitos"
@@ -14,31 +31,164 @@
 			"SupportMessage": "Dê um Trocado pro seu Bugbear"			
 		},
 		"BugbearsMechanics": "Bugbear's Mechanics",
+		"IntegratedDamageModifiers": {
+			"Name": "Automações Padrão de Dano",
+			"Hint": "Escolha quais automações de dano do D&D 5e o BM5E executa sem exigir o Cálculo de Dano Mutável.",
+			"ElementalAdept": "Elemental Adept",
+			"MassiveDamage": "Dano Massivo"
+		},
+		"HideChatTagsFromPlayers": {
+			"Name": "Ocultar Marcadores dos Cartões de Chat para os Jogadores",
+			"Hint": "Oculta os marcadores de itens e atividades (como tipo de arma, alcance e proficiência) em todos os cartões do chat visualizados pelos jogadores. Os Mestres continuam vendo os marcadores. Aplica-se imediatamente."
+		},
+		"CompactCombinedCards": {
+			"Name": "Cartões Combinados Compactos",
+			"Attack": "Ataque {number}",
+			"Hint": "Exibe as rolagens de ataque e dano vinculadas lado a lado, com indicadores de acerto/erro nos alvos e prévias de dano em uma única linha de indicadores, controles compactos de multiplicadores e uma marca de seleção ao lado do dano para as ações Aplicar e Restaurar. Aplica-se imediatamente a este cliente."
+		},
+		"ChatDoubleClick": {
+			"Name": "Ativar Clique Duplo em Documentos do Chat",
+			"Hint": "Clique duas vezes nos ícones e nomes dos documentos nas mensagens do chat para abrir suas fichas ou imagens."
+		},
+		"ChatAction": {
+			"Enabled": {
+				"Name": "Exibir Rótulos das Ações do Chat",
+				"Hint": "Exibe rótulos de texto nos botões compactos de Ataque, Dano, Salvaguarda e Teste. Aplica-se apenas ao seu usuário e é atualizado imediatamente."
+			},
+			"Attack": "Ataque",
+			"AttackHistory": "Ataque {number}: {total} ({result})",
+			"DamageHistory": "Dano {number}: {total} ({result})",
+			"DamageHistoryEmpty": "Dano {number}: -",
+			"Normal": "Normal",
+			"AttackHistoryHeading": "Ataque {number}: {total}",
+			"AttackHistoryTarget": "{name}: {result}",
+			"RolledTimes": "(Rolado: {count} vezes)",
+			"Hit": "Acerto",
+			"Miss": "Erro",
+			"Critical": "Crítico",
+			"Fumble": "Falha Crítica",
+			"Unknown": "Desconhecido",
+			"Check": "Teste",
+			"Damage": "Dano",
+			"Save": "Salvaguarda"
+		},
     	"MutableDamageCalculation": {
-      		"Name": "Cálculo de Dano Mutável (Temporário)",
-      		"Hint": "Adiciona temporariamente ganchos de cálculo de dano mutável ao D&D 5e. Requer o libWrapper e recarrega o mundo quando alterado.",
-      		"LibWrapperRequired": "O cálculo de dano mutável do BM5E requer que o libWrapper esteja habilitado."
+      		"Name": "Cálculo de Dano Mutável",
+      		"Hint": "Adiciona pontos de integração que permitem modificar o cálculo de dano do D&D 5e, necessários para automações como Arcane Ward e Undead Fortitude. Requer libWrapper e recarrega o mundo quando esta configuração é alterada.",
+      		"LibWrapperRequired": "O cálculo de dano mutável do BM5E requer que o libWrapper esteja habilitado.",
+			"Features": {
+				"Name": "Automações com Cálculo de Dano Mutável",
+				"Hint": "Escolha quais automações de dano do D&D 5e o BM5E executa utilizando o Cálculo de Dano Mutável.",
+        		"ArcaneWard": "Arcane Ward",
+				"DeathWard": "Death Ward",
+				"UndyingSentinel": "Undying Sentinel",
+				"UndeadFortitude": "Undead Fortitude"
+			}
     	},
     	"DamageApplication": {
+			"ArcaneWardNote": "Arcane Ward absorveu {absorbed} de dano. Dano aplicado: {applied}. PV da Proteção: {remaining}/{maximum}.",
+			"ArcaneWardPreview": "Arcane Ward absorveria {absorbed} de dano. Dano restante: {applied}. PV da Proteção após a absorção: {remaining}/{maximum}.",
       		"Enabled": {
-        		"Name": "Ativar Restauração de Dano",
-        		"Hint": "Registra aplicações de dano nativas do D&D5e e adicionar um botão Restaurar a bandeja de dano."
+        		"Name": "Habilitar Reversão do Dano Aplicado",
+        		"Hint": "Registra as aplicações de dano do próprio D&D5e e adiciona um botão Restaurar à bandeja de dano."
       		},
       		"Applied": "Aplicado",
+			"ApplyAgain": "Aplicar Novamente",
+			"AppliedActions": "Aplicado: Aplicar Novamente/Restaurar",
       		"Restore": "Restaurar",
       		"Restored": "Restaurado"
     	},
+		"EffectApplication": {
+			"Remove": "Remover",
+			"Removed": "Removido"
+		},
     	"EffectApplicationOutcomes": {
       		"Name": "Desmarcar Alvos de Efeitos por Resultado de Rolagem",
-      		"Hint": "Desmarca automaticamente os alvos de ataques que erraram e os alvos que obtiveram sucesso em salvaguardas nas bandejas de aplicação de efeitos."
+      		"Hint": "Desmarca automaticamente, nas bandejas de aplicação de efeitos, os alvos que não foram atingidos pelo ataque e aqueles que tiveram sucesso na salvaguarda."
     	},
-    	"Activation": {
-      		"IsDamaged": "Sofrer Dano"
-    	},
+		"StandingFromProne": {
+			"Name": "Implementar Mecânicas de Caído",
+			"Hint": "Aplicar a condição Caído seleciona a ação Rastejar para os tokens do ator. Remover a condição Caído restaura a ação de movimento anterior ou seleciona a ação disponível mais rápida. Clique no ícone Caído de um token para se levantar, gastando metade do seu deslocamento de Caminhada. É necessário ter deslocamento restante suficiente."
+		},
+		"Grapple": {
+			"Setting": {
+				"Name": "Implementar Mecânicas de Agarrado",
+				"Hint": "Os proprietários do ator e o Mestre ativo podem clicar no ícone Agarrado de um token para realizar uma rolagem para escapar, utilizando as regras configuradas de 2014 ou 2024. O Mestre ativo pode clicar com o botão direito para definir ou editar a CD para escapar. Pelas regras de 2024, o agarrão também termina quando a criatura que está agarrando fica Incapacitada ou se move para fora do alcance."
+			},
+			"Escape": "Escapar de um Agarrão",
+			"Grappler": "Criatura que Está Agarrando",
+			"Skill": "Perícia",
+			"DC": "CD para Escapar",
+			"DCPlaceholder": "Se não houver uma criatura agarrando",
+			"Roll": "Rolar",
+			"Cancel": "Cancelar",
+			"NoSource": "Não foi possível identificar a criatura que está agarrando a partir deste efeito.",
+			"NoDC": "Não foi possível determinar a CD para escapar deste agarrão.",
+			"Continue": "Continuar",
+			"SetDC": "Definir CD para Escapar",
+			"SetDCButton": "Definir",
+			"RequestEscape": "Solicitar Tentativa de Fuga",
+			"NoGM": "É necessário que um Mestre esteja ativo para definir a CD para escapar deste agarrão."
+		},
+		"ActivationTriggers": {
+			"ToggleBehaviours": "Alternar Comportamentos",
+			"Trigger": "Gatilho",
+			"Behaviours": "Comportamentos",
+			"ToggleFilters": "Alternar Filtros",
+			"ActorHP": "PV do Ator da Atividade",
+			"HPFilters": "Filtros de PV",
+			"OpponentHP": "PV do Oponente",
+			"HPFiltersHint": "Compara o PV atual com o PV máximo, desconsiderando o PV temporário. O ator da atividade é o proprietário desta atividade acionada; o oponente é cada criatura envolvida no evento. O movimento não possui oponente.",
+			"Title": "Gatilhos de Ativação do BM5E",
+			"Triggers": "Gatilhos",
+			"Event": "Evento",
+			"Damaged": "Dano Sofrido",
+			"Damages": "Dano Causado",
+			"Healed": "Curado",
+			"Attacked": "Atacado",
+			"Attacks": "Realiza um Ataque",
+			"AttackOutcome": "Resultado do Ataque",
+			"AttackOutcomeAll": "Todos",
+			"AttackOutcomeHit": "Acerto",
+			"AttackOutcomeMiss": "Erro",
+			"InRange": "Dentro do Alcance",
+			"ForcedMovement": "Movimento Forçado",
+			"Movement": "Movimento",
+			"AutoTarget": "Selecionar Automaticamente a Outra Criatura como Alvo",
+			"AutoTargetHint": "Eventos do receptor selecionam a criatura de origem como alvo. Eventos da origem selecionam a criatura afetada como alvo. Eventos de Movimento e Dentro do Alcance selecionam o token que acionou o gatilho.",
+			"BypassConfigure": "Ignorar Diálogo de Configuração",
+			"BypassConfigureHint": "Ignora as opções de configuração da atividade, como vantagem, escalonamento e uso de recursos.",
+			"AutoRoll": "Rolar Atividade Automaticamente",
+			"AutoRollHint": "Cria a mensagem de chat Acionado e utiliza a atividade imediatamente. Caso contrário, aguarda até que um usuário a selecione.",
+			"TriggeredEvent": "Acionado: {event}",
+			"HitPoints": "Somente Quando o PV Estiver",
+			"Operator": "Operador",
+			"HPPercentage": "Porcentagem de PV",
+			"DamageTypes": "Tipos de Dano",
+      		"DamageReduction": "Reduzir Dano Sofrido",
+      		"DamageReductionHint": "Fórmula para um único limite de redução de dano. Os tipos de dano selecionados compartilham esse limite; se nenhum tipo for selecionado, a redução se aplica a todos os tipos de dano. Requer o Cálculo de Dano Mutável.",
+      		"ReduceDamagePrompt": "Usar {activity} para reduzir este dano?",
+			"HealingTypes": "Tipos de Cura",
+			"ItemTypes": "Tipos de Item de Origem",
+      		"InRangeEvents": "Eventos de Gatilho",
+      		"SourceTurnStart": "Início do Turno da Origem",
+      		"SourceTurnEnd": "Fim do Turno da Origem",
+      		"TargetTurnStart": "Início do Turno do Token Dentro do Alcance",
+      		"TargetTurnEnd": "Fim do Turno do Token Dentro do Alcance",
+      		"TargetMoveIn": "Token Entra na Área",
+      		"TargetMoveOut": "Token Sai da Área",
+      		"TriggersPerTokenTurn": "Gatilhos por Token/Turno",
+      		"DeleteAfterTriggers": "Total de Gatilhos Antes da Remoção",
+      		"DeleteAfterTriggersHint": "Remove esta emanação depois que o gatilho tiver sido oferecido este número de vezes, somando todos os tokens e turnos, inclusive fora de combate. Cada token elegível conta separadamente, mesmo que a atividade oferecida não seja usada. Defina como 0 para não limitar.",
+      		"Sizes": "Tamanhos dos Oponentes",
+      		"CreatureTypes": "Tipos dos Oponentes",
+      		"IncludeSource": "Incluir o Token de Origem",
+			"Save": "Salvar"
+		},
 		"EnableStatusHUDSorting": {
 			"Switch": {
 				"Name": "Habilitar Organização de Status da HUD",
-				"Hint": "Quando ativado, as etiquetas de efeitos de status também serão exibidas e uma classificação baseada em opiniões será aplicada!"
+				"Hint": "Quando habilitado, os nomes dos efeitos de status também serão exibidos e será aplicada a ordenação definida pelo BM5E."
 			},
 			"SortingType": {
 				"Name": "Organização de Efeitos de Status",
@@ -78,8 +228,8 @@
 			}
 		},
 		"AutoPopout": {
-			"Name": "Ativar Uso de Mensagens Pop-Up",
-			"Hint": "Exibe automaticamente mensagens pop-up de uso para padrões configurados, atividades ativadas manualmente e ataques extras.",
+			"Name": "Habilitar Janelas Separadas para Mensagens de Uso",
+			"Hint": "Abre automaticamente as mensagens de uso em janelas separadas, conforme os padrões configurados, as atividades em que o recurso foi habilitado manualmente e os ataques extras.",
 			"Identifiers": {
         		"General": "Geral",
         		"DefaultsTitle": "Padrões configurados de itens e atividades",
@@ -102,7 +252,7 @@
         		"ExtraAttackHint": "Corresponder a uma Característica do ator. Os ataques com armas corpo a corpo e à distância desse ator serão exibidos em pop-up."
       		},
       		"Activity": {
-        		"Name": "Usar Mensagem Pop-Up",
+        		"Name": "Abrir Mensagem de Uso em Janela Separada",
         		"Hint": "Adição do Bugbear's Mechanics 5e. Exibe a mensagem de uso em pop-up para reutilizá-la conforme necessário. Útil para Ataque Extra, uso rápido de Guardiões Espirituais, etc."
       		}
 		},
@@ -115,17 +265,21 @@
 			"ScorchingRay": "Scorching Ray",
 			"MagicMissile": "Magic Missile"
 		},
+		"RerollControls": {
+			"Name": "Exibir Controles para Rolar Novamente",
+			"Hint": "Exibe botões de dados clicáveis e menus para rolar novamente nas rolagens do chat que você pode modificar. Aplica-se apenas ao seu usuário e é atualizado imediatamente."
+		},
 		"ChatMessagesTooltips": {
 			"Name": "Exibir Resultados de Rolagem nos Botões de Mensagem",
-			"Hint": "Quando ativado, os botões de Ataque e Dano nas mensagens de chat exibirão os resultados dos dados."
+			"Hint": "Exibe o histórico das rolagens de Ataque e Dano nas dicas dos botões e marca os botões de Salvaguarda e Teste quando essas rolagens já tiverem sido realizadas. Aplica-se apenas ao seu usuário e as alterações são aplicadas imediatamente."
 		},
 		"EffectsEditor": {
       		"Title": "Editor de Efeito BM5E",
       		"ChangeType": "Bugbear's Mechanics 5e",
       		"LegacyChangeType": "BM5E",
-      		"ChangeIndex": "Alterar {index}",
+      		"ChangeIndex": "Alteração {index}",
       		"AttributeKey": "Chave do Atributo",
-      		"AttributeKeyHint": "Para obter detalhes sobre o dano contínuo do BM5E, abra o <a href=\"#\" data-bm5e-readme>README local</a>.",
+      		"AttributeKeyHint": "Para detalhes sobre os efeitos de Overtime do BM5E, abra o <a href=\"#\" data-bm5e-readme>README local</a>.",
       		"Readme": {
         		"MissingDocument": "O documento README do BM5E não foi encontrado.",
         		"MissingPack": "O compêndio do README do BM5E não foi encontrado: {pack}"
@@ -154,8 +308,6 @@
       		"SaveDC": "CD da Salvaguarda",
       		"PreserveDC": "Preservar CD de Origem",
       		"PreserveDCHint": "Determina a CD da atividade vinculada usando o ator de origem antes de criar a atividade de overtime.",
-      		"Magical": "Mágico",
-      		"MagicalHint": "Trata esta atividade de overtime como mágica para módulos compatíveis.",
       		"CheckAbility": "Atributo do Teste",
       		"AssociatedSkills": "Perícias Associadas",
       		"AssociatedTools": "Ferramentas Associadas",
@@ -169,7 +321,7 @@
       		"IntervalUnit": {
         		"seconds": "Segundos",
         		"minutes": "Minutos",
-        		"hours": "Houras",
+        		"hours": "Horas",
         		"days": "Dias"
       		},
       		"Half": "Metade",
@@ -177,8 +329,8 @@
       		"NoActivityParent": "O BM5E não encontrou um item para criar a atividade de overtime.",
       		"ToggleBehavior": "Alternar Comportamento",
       		"OutcomeEffects": "Efeitos de Resultado",
-      		"SuccessTarget": "Alvo Bem-Sucedido",
-      		"FailureTarget": "Alvo que Falhou",
+      		"SuccessTarget": "Meta de Sucessos",
+      		"FailureTarget": "Meta de Falhas",
       		"SuccessesNeeded": "Sucessos Necessários",
       		"FailuresNeeded": "Falhas Necessárias",
       		"Consecutive": "Consecutivo",
@@ -190,19 +342,19 @@
       		"TriggerCounter": "Contador de Gatilho",
       		"TriggersNeeded": "Gatilhos Necessários",
       		"TriggeredEventsNumber": "Número de Eventos Acionados",
-      		"OnFinalTrigger": "No Gatilho Finaç",
+      		"OnFinalTrigger": "No Gatilho Final",
       		"OnEachTrigger": "A Cada Gatilho",
       		"OverallSuccesses": "Total de Sucessos",
       		"OverallFailures": "Total de Falhas",
       		"ConsecutiveSuccesses": "Sucessos Consecutivos",
-      		"ConsecutiveFailures": "Falhas Consecutivos",
+      		"ConsecutiveFailures": "Falhas Consecutivas",
       		"ConsecutiveSuccessTarget": "Sucessos Consecutivos Necessários",
-      		"ConsecutiveFailureTarget": "Falhas Consecutivos Necessários",
+      		"ConsecutiveFailureTarget": "Falhas Consecutivas Necessárias",
       		"NumberPlaceholder": "Número",
       		"RemoveOvertime": "Remover Overtime",
      		"GeneratedValue": "Valor Gerado",
       		"GeneratedJson": "JSON Gerado",
-      		"GeneratedValueHint": "Pré-visualização do valor de dano contínuo gerado a partir dos campos do editor.",
+      		"GeneratedValueHint": "Pré-visualização da configuração de Overtime gerada a partir dos campos do editor.",
       		"Apply": "Aplicar",
       		"ApplyClose": "Aplicar e Fechar",
       		"Reset": "Redefinir",
@@ -232,12 +384,21 @@
         		"Name": "Permitir Acúmulo",
         		"Hint": "Adição do Bugbear's Mechanics 5e. Permite que este encantamento seja aplicado ao mesmo item mais de uma vez."
       		},
+      		"PreferredItem": {
+        		"Name": "Identificador do Item Preferido",
+        		"Hint": "Ao escolher pelo chat um item de um ator alvo, seleciona automaticamente o item compatível com este identificador se houver exatamente uma correspondência. Se houver várias, elas aparecem primeiro no seletor; se não houver nenhuma, usa o seletor normal. Ainda é permitido arrastar e soltar outro item compatível. Deixe em branco para usar a seleção normal."
+      		},
       		"MaximumItems": {
         		"Name": "Máximo de Itens Encantados",
         		"Hint": "Adição do Bugbear's Mechanics 5e. Número de itens diferentes que este encantamento pode afetar simultaneamente. O padrão é 1. Use 0 para ilimitado.",
         		"Reached": "Este encantamento atingiu o número máximo de itens encantados."
       		},
-      		"Unauthorized": "Somente o proprietário do alvo ou o usuário do encantamento podem aplicar este encantamento."
+      		"ChooseRecipients": "Marque pelo menos um token como alvo ou selecione um token antes de escolher os itens a encantar.",
+      		"PickerTitle": "Aplicar Encantamento: {actor}",
+      		"Skip": "Ignorar",
+      		"CancelRemaining": "Cancelar Restantes",
+      		"TargetLimitReached": "Este uso atingiu o número máximo de destinatários permitido pela atividade.",
+      		"Unauthorized": "Apenas o proprietário do alvo, o proprietário do ator de origem ou um Mestre pode aplicar este encantamento."
     	}
 	}
 }
