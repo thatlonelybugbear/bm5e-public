@@ -14,6 +14,7 @@
   - Reroll menus outline the current advantage or critical mode. Attack-history tooltips indent target outcomes for easier reading.
   - Combined and compact attack cards are bypassed when **Midi-QOL** is active, leaving its card layout in control.
   - **Auto Roll Damage** now rolls missing damage when a rerolled attack changes from a miss to a hit, using that attack's original targets without duplicating existing damage.
+- Updated pt_BR translation by [Kharmans](https://github.com/Kharmans) 🤗
 
 ## v14.606.1
 
