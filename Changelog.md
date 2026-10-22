@@ -1,3 +1,8 @@
+## v14.606.2.1 - Hotfix for BM5e v14.606.2
+
+- Improved compatibility between document double-clicks and **Midi-QOL** cards: item descriptions expand normally, and single clicks retain their original target and modifier keys.
+- **Hide chat-card tags for** now lets GMs select **GMs**, **Players**, or both. Leave it empty to show tags to everyone. Existing player-only preferences are preserved.
+
 ## v14.606.2 - Final Release Outside Foundry Patreon Integration
 
 - Distribution and licensing
