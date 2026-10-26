@@ -1,3 +1,15 @@
+## 14.606.4
+
+- Grappled riders from Check activities now preserve their DC for 2024 escape attempts, matching Save activities.
+- Reorganized the README around setup and everyday tasks.
+- Enchantment item preferences accept `tag:true-strike` to match tags supplied by BM5e or BLT5e. Tag pickers show compatible matches and respect existing application limits. Add item tags below Item Identifier using the native input and Add button; BLT5e tags are shown read-only.
+- Added **No combat trigger** for interval-only overtime effects. The regeneration examples use it to avoid extra turn-start healing offers.
+- Updating an overtime effect without changing its configuration preserves its success/failure progress, trigger count, and interval timer.
+- Corrected the Activity Outcome example's AC penalty and removed unintended initial damage from the Ensnaring Strike example.
+- Overtime activities can use same-item relative links that survive compendium import and resolve against the source actor's item. Updated Ensnaring Strike to use these links. **Also usable outside combat** now preserves the configured combat timing.
+- Rerolls now refresh linked activity cards and their popouts on all connected clients, including save/check outcomes and damage previews, without requiring a reload.
+- Fixed overtime checks and saves rolled on the active GM client with Midi-QOL: rolls such as **Escape Restraint** now resolve effect removal using the final result, including optional bonuses and rerolls within that roll.
+
 ## v14.606.3
 
 - **First release through Foundry VTT's Patreon integration and Protected Content system.**
@@ -20,10 +32,10 @@
 - Improved compatibility between document double-clicks and **Midi-QOL** cards: item descriptions expand normally, and single clicks retain their original target and modifier keys.
 - **Hide chat-card tags for** now lets GMs select **GMs**, **Players**, or both. Leave it empty to show tags to everyone. Existing player-only preferences are preserved.
 
-## v14.606.2 - Final Release Outside Foundry Patreon Integration
+## v14.606.2
 
 - Distribution and licensing
-  - Final release using the existing distribution method. Future releases will use Foundry VTT's Patreon integration and Protected Content system.
+  - Releases continue through the existing distribution method. Foundry VTT's Patreon integration and Protected Content distribution are planned once approved by Foundry.
   - Updated license: previously obtained versions remain usable after a subscription ends; further updates require an active entitlement.
   - Commercial games and streams are permitted with module credit and a Patreon link.
 - Chat cards and rolls

@@ -1,5 +1,10 @@
 {
 	"BM5E": {
+		"ItemTags": {
+			"Name": "Tags (BM5e)",
+			"Hint": "Enter a tag and click Add. Match it in enchantment preferences with tag:true-strike, for example. Tags are case-sensitive.",
+			"LoadoutName": "Tags (BLT5e)"
+		},
 		"SettingsMenus": {
 			"chat": { "Name": "Chat & Rolls", "Hint": "Configure your chat interactions, roll tooltips, automatic damage rolls and popouts." },
 			"hud": { "Name": "Token HUD", "Hint": "Configure your token status sorting, scaling and filtering." },
@@ -37,9 +42,11 @@
 			"ElementalAdept": "Elemental Adept",
 			"MassiveDamage": "Massive Damage"
 		},
-		"HideChatTagsFromPlayers": {
-			"Name": "Hide chat-card tags from players",
-			"Hint": "Hide item and activity tags (such as weapon type, range and proficiency) on all chat cards viewed by players. GMs still see the tags. Applies immediately."
+		"HideChatTags": {
+			"Name": "Hide chat-card tags for",
+			"Hint": "Hide item and activity tags (such as weapon type, range and proficiency) for the selected groups. Leave empty to show tags to everyone. Applies immediately.",
+			"GMs": "GMs",
+			"Players": "Players"
 		},
 		"CompactCombinedCards": {
 			"Name": "Compact combined cards",
@@ -220,7 +227,12 @@
 		},
 		"AutoRollDamage": {
 			"Name": "Auto Roll Damage",
-			"Hint": "Automatically roll damage when an attack is successful.",
+			"Hint": "Choose when attack damage rolls automatically. In either enabled mode, save activities open the damage dialog when used, before saves resolve. Disabled while Midi-QOL is active.",
+			"Modes": {
+				"Off": "Disabled",
+				"Hits": "When the attack hits",
+				"Always": "Always"
+			},
 			"Prompt": "You have already rolled damage for this attack. What do you want to do? Close dialog to cancel!",
 			"Choices": {
 				"Reroll": "Reroll Damage",
@@ -253,7 +265,8 @@
 			},
 			"Activity": {
 				"Name": "Use message pop-out",
-				"Hint": "Bugbear's Mechanics 5e addition. Pop out the usage message for reusing it as needed. Helpful for extra attacks, Spirit Guardians quick use, etc."
+				"Hint": "Open this activity's use message in a separate window for reuse.",
+				"Tooltip": "Useful for repeated attacks or reusing activities such as Spirit Guardians. This activity preference overrides configured pop-out defaults; the user's global pop-out setting must also be enabled."
 			}
 		},
 		"Items": {
@@ -316,7 +329,8 @@
 			"DamageAmount": "Damage Amount",
 			"DamageType": "Damage Type",
 			"DamageOnSave": "Damage On Save",
-			"OutOfCombat": "Out of Combat",
+			"OutOfCombat": "Also usable outside combat",
+			"OutOfCombatHint": "Keep the combat trigger and allow use outside combat too. Damage and healing can also run on a configured world-time interval.",
 			"Interval": "Interval",
 			"IntervalUnit": {
 				"seconds": "Seconds",
@@ -359,6 +373,7 @@
 			"ApplyClose": "Apply & Close",
 			"Reset": "Reset",
 			"Trigger": {
+				"none": "No combat trigger",
 				"encounterEnd": "End of Encounter",
 				"roundStart": "Start of Round",
 				"roundEnd": "End of Round",
@@ -375,26 +390,52 @@
 				"encounter": "Encounter"
 			}
 		},
+		"ItemMaterials": {
+			"Name": "Enable item material properties",
+			"Hint": "Add Wooden, Metal, Glass, and Crystal properties to weapons and equipment. Mark item materials manually, then use them in the Enchant activity's existing item-property restrictions. Disabled by default. Requires a reload.",
+			"Wooden": "Wooden",
+			"Metal": "Metal",
+			"Glass": "Glass",
+			"Crystal": "Crystal"
+		},
 		"Enchantment": {
+			"AnyTypePropertiesHint": "Bugbear's Mechanics addition. Property restrictions are also available for Any item type, allowing one activity to affect matching items across different types.",
 			"Enabled": {
 				"Name": "Enable enchantment handling",
-				"Hint": "Enable Bugbear's Mechanics 5e enchantment chat-card handling and stackable enchantments."
+				"Hint": "Enable enchantment target selection, preferred-item matching, application limits, stack controls, and tray additions."
 			},
 			"Stackable": {
 				"Name": "Allow enchantment stacks",
-				"Hint": "Bugbear's Mechanics 5e addition. Allow this enchantment to be applied to the same item more than once."
+				"Hint": "Allow this enchantment to be applied to the same item more than once.",
+				"Tooltip": "Allow several active copies of this enchantment on the same item. For target enchantments, each copy counts toward the per-use application limit, while the overall item limit counts that item only once. Self-enchantments ignore these limits."
 			},
 			"PreferredItem": {
-				"Name": "Preferred item identifier",
-				"Hint": "When choosing an item on a target actor from chat, automatically select a single compatible item with this identifier. Multiple matches appear first in the picker; no match uses the usual picker. Dropping another compatible item remains allowed. Leave blank for normal selection."
+				"Name": "Preferred item identifiers or tags",
+				"Hint": "Match any listed identifier or tag, separated by commas. Example: shield*, tag:true-strike. Leave blank for normal selection.",
+				"Tooltip": "An item can match any entry. Prefix a tag with tag: to match an exact, case-sensitive BM5e or BLT5e tag. Everything after the prefix is literal: tag:true-strike:2 matches the item tag true-strike:2. Use * only for partial identifier matches; shield* matches shield, shield-wooden, and tower-shield. Plain identifiers match exactly. A single compatible match is chosen automatically. Multiple tag or wildcard matches limit the picker to matches; plain identifiers alone put matches first. With no matches, the normal picker opens. Dropping another compatible item remains allowed."
+			},
+			"ApplyAllPreferred": {
+				"Name": "Apply to all matching items",
+				"Hint": "Automatically enchant every compatible match, within recipient and item limits.",
+				"Tooltip": "Applies matching items sequentially without a picker, until a recipient or item limit prevents further applications. Set both item limits high enough, or use 0 for unlimited. Blank identifiers or no matches open the normal single-item picker. Self-enchantments are unchanged."
 			},
 			"MaximumItems": {
 				"Name": "Maximum enchanted items",
-				"Hint": "Bugbear's Mechanics 5e addition. The number of different items this enchantment can affect at once. Defaults to 1. Use 0 for unlimited.",
+				"Hint": "Maximum different items enchanted at once across all uses and recipients. Blank: 1. Use 0 for unlimited.",
+				"Tooltip": "Counts different items across every use of this activity. Multiple stacks on one item count as one item. Removing all stacks from an item frees a slot. Lowering the limit does not remove existing enchantments.",
 				"Reached": "This enchantment has reached its maximum number of enchanted items."
+			},
+			"MaximumItemsPerUse": {
+				"Name": "Maximum enchanted items per use",
+				"Hint": "Maximum active applications from one use, including repeated stacks. Blank or 0: unlimited. The overall item limit still applies.",
+				"Tooltip": "Counts active applications from the current use message across all recipients. Repeated stacks on one item each count. A new use message has its own allowance. Removing an application frees a slot; earlier uses still count toward the overall item limit.",
+				"Reached": "This use has reached its maximum number of enchanted items."
 			},
 			"ChooseRecipients": "Choose at least one targeted or selected token before choosing items to enchant.",
 			"PickerTitle": "Apply Enchantment: {actor}",
+			"NoMatchingIdentifiers": "No matching identifiers found.",
+			"SelfLabel": "Self-enchant",
+			"UndoHint": "Shift+Click: Undo all<br>Ctrl+Shift+Click: Undo all (per item)",
 			"Skip": "Skip",
 			"CancelRemaining": "Cancel Remaining",
 			"TargetLimitReached": "This use has reached the activity's maximum number of recipients.",
