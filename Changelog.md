@@ -9,6 +9,8 @@
 - Overtime activities can use same-item relative links that survive compendium import and resolve against the source actor's item. Updated Ensnaring Strike to use these links. **Also usable outside combat** now preserves the configured combat timing.
 - Rerolls now refresh linked activity cards and their popouts on all connected clients, including save/check outcomes and damage previews, without requiring a reload.
 - Fixed overtime checks and saves rolled on the active GM client with Midi-QOL: rolls such as **Escape Restraint** now resolve effect removal using the final result, including optional bonuses and rerolls within that roll.
+- Fixed relative overtime links on concentration effects such as Ensnaring Strike.
+- Linked overtime damage and healing preserve the original cast's spell-slot scaling. Generated damage and healing ticks preserve source physical properties and exclude native recipient bonuses to damage or healing performed. Added an explicit activity flag for other bonus providers; damage-roll hooks remain available.
 
 ## v14.606.3
 

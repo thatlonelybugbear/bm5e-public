@@ -157,7 +157,7 @@ You can also set an item activity's activation cost to **BM5E Overtime** and con
 - **No combat trigger:** use for interval-only effects, such as regeneration based on elapsed world time.
 - **Outcome counters:** resolve actions after total or consecutive successes/failures, or after a number of triggers.
 
-Same-item activity links survive compendium import. Updating an effect without changing its overtime configuration preserves progress and interval timing.
+Same-item activity links survive compendium import. Linked spell damage and healing retain the original cast's slot scaling. Generated damage and healing ticks exclude native recipient bonuses to damage or healing performed, while preserving source physical properties such as magical damage. Other bonus providers need to support BM5E's recipient-bonus exclusion flag. Updating an effect without changing its overtime configuration preserves progress and interval timing.
 
 During combat, BM5E creates messages offering available overtime activities. With Midi-QOL's Activation Cost Automation set to Auto Trigger, those activities can roll automatically. See the detailed reference for serialized configuration, timing options, and outcome examples.
 
