@@ -13,6 +13,7 @@ Requires Foundry VTT 14.367+ (v14), D&D5e 6.0.2+, and libWrapper. Verified with 
 - [Midi-QOL Compatibility](#midi-qol-compatibility): healing, damage triggers, and reversals.
 - [Prone Mechanics](#prone-mechanics), [Grapple Mechanics](#grapple-mechanics), and [Falling Mechanics](#falling-mechanics): token-icon controls and condition automation.
 - [Activation Triggers](#activation-triggers): incoming and outgoing damage, healing, attack, movement, and in-range triggered activities.
+- [Templates and Emanations](#templates-and-emanations): appearance, placement overrides, concentration, and targeting previews.
 - [Overtime Effects](#overtime-effects): automatic combat and encounter activity triggers from Active Effects.
 - [Enchantments](#enchantments): chat-card target and item selection for dnd5e enchantment activities.
 
@@ -20,7 +21,9 @@ Requires Foundry VTT 14.367+ (v14), D&D5e 6.0.2+, and libWrapper. Verified with 
 
 Settings are grouped into **Chat & Rolls**, **Token HUD**, **Damage Mechanics**, **Conditions & Effects**, and **Troubleshooting** menus. Existing saved preferences are retained. These menus save changes immediately; close them with the window's X. Token HUD changes update an open HUD without saving the main Game Settings form.
 
-**Chat & Rolls** preferences apply to your user, except **Compact combined cards**, which is saved on this client, and **Hide chat-card tags for**, which is a GM-controlled world setting. These settings do not require a client reload. Label, reroll-control, and result-display changes refresh existing chat cards and open message popouts immediately. Automation and pop-out preferences apply to subsequent uses; document permissions still govern rolls and activity use.
+All non-world settings are saved per user and follow that user across browsers, including **Compact combined cards**, other Chat & Rolls preferences, auto-popout defaults, and Token HUD preferences. **Hide chat-card tags for** remains a GM-controlled world setting, as do damage automation, condition mechanics, and troubleshooting options. Existing client-scoped Compact combined cards preferences migrate to the user on first load.
+
+Personal settings do not require a reload. Label, reroll-control, and result-display changes refresh existing chat cards and open message popouts immediately. Automation and pop-out preferences apply to subsequent uses; document permissions still govern rolls and activity use. Individual chat-card expand/collapse choices remain browser-local.
 
 ### Module Support
 
@@ -58,7 +61,7 @@ Attack and Damage results, including their expandable rolls and application tray
 - **Show chat action labels** adds text labels to compact Attack, Damage, Save, and Check controls for your user. Users without a saved preference inherit the previous world label preference, or enabled when none was saved.
 - With labels enabled, these buttons share the available row width; Template and Resource controls remain compact icon buttons.
 - **Hide chat-card tags for** is a world setting, disabled by default. GMs can select **GMs**, **Players**, or both under **Chat & Rolls** to hide item and activity tags, such as weapon type, range, and proficiency. Leave the selection empty to show tags to everyone. Changes apply immediately.
-- **Compact combined cards** is off by default and applies immediately on this client. Linked attack and damage results share a row. Target pills show hit/miss and expected damage, with multipliers just below. The checkmark beside damage applies it; after a recorded application, it opens **Apply again / Restore** when **Enable damage restoration** is enabled. The amount is separated from the target name for readability.
+- **Compact combined cards** is a per-user preference, off by default, and applies immediately. Linked attack and damage results share a row. Target pills show hit/miss and expected damage, with multipliers just below. The checkmark beside damage applies it; after a recorded application, it opens **Apply again / Restore** when **Enable damage restoration** is enabled. The amount is separated from the target name for readability.
 - Click the chevron on an attack's dotted divider to fold it into a small **Attack 1**, **Attack 2**, etc. row; click the row to expand it. Automatic folding follows **Collapse Trays in Chat**, including collapse after application except in **Never Collapse** mode. Manual choices are remembered on this client.
 - Hold **Shift** to show a trash control beside an attack's chevron, whether expanded or collapsed. It deletes that attack and its paired damage together when you have permission to delete both. Separate damage entries retain their own delete control. Deleting a row does not restore damage already applied; use Restore first if needed.
 - Clicking the top **Damage** button again creates a separate damage entry without replacing an existing attack/damage pair. Separate damage uses the same right-hand result column and Apply/Restore checkmark. Use the damage row's reroll control to replace that roll. Ambiguous or shared damage stays separate from individual attacks.
@@ -104,7 +107,7 @@ Hooks.on('dnd5e.preCalculateDamage', (actor, _damages, _options, context) => {
 
 ### Damage Automations
 
-The **Mutable Damage Automations** multiselect is available when **Mutable Damage Calculation** is enabled. Arcane Ward absorbs eligible damage before zero-HP protections run. BM5E resolves enabled zero-HP protections in this order: Death Ward, Undying Sentinel, then Undead Fortitude. Only one protection resolves for each damage application.
+The **Mutable Damage Automations** multiselect is available when **Mutable Damage Calculation** is enabled. Arcane Ward absorbs eligible damage before zero-HP protections run. BM5E resolves enabled zero-HP protections in this order: Death Ward, Resilience, Undying Sentinel, then Undead Fortitude. Only one protection resolves for each damage application.
 
 #### Arcane Ward
 
@@ -135,6 +138,31 @@ The **Mutable Damage Automations** multiselect is available when **Mutable Damag
 - Rolls a configurable Constitution saving throw against DC 5 plus the damage taken.
 - On a success, the actor drops to 1 HP instead of 0 HP.
 - Rerolling the save updates its chat message but does not retroactively revise damage already applied.
+
+#### Resilience
+
+Enable **Mutable Damage Calculation**. On the source effect, add a change with type **Bugbear's Mechanics 5e** and choose `flags.bm5e.resilience` from the attribute key suggestions. Open its value editor to choose the saving throw ability, edit the DC or formula, and configure exclusions. Apply saves the generated JSON to that change. Native emanations can distribute this effect without additional BM5E setup.
+
+Resilience can also use `flags.bm5e.resilience` directly on an active effect or the recipient actor; it does not require an item identifier or an entry in Mutable Damage Automations. For example, with a macro where `effect` is its ActiveEffect document:
+
+```js
+await effect.setFlag('bm5e', 'resilience', {
+  ability: 'con',
+  dc: '5 + @bm5e.damageDealt.total',
+  excludeCritical: false,
+  excludeInstantDeath: false,
+  excludedDamageTypes: []
+});
+```
+
+- For an effect-based configuration, disable or remove the effect to stop granting Resilience. If configured directly on an actor, remove the flag with `actor.unsetFlag('bm5e', 'resilience')`.
+- Damage must reduce positive HP to 0. BM5E pauses application while the recipient rolls the save. Success leaves 1 HP; failure, cancellation, or an invalid configuration's DC applies damage normally. The effect is not consumed.
+- `@bm5e.damageDealt.total` is the resolved damage total after defenses and damage reductions, before temporary HP absorption and before capping damage at the actor's remaining HP. The DC accepts a number or a deterministic formula using recipient roll data and the existing BM5E damage context, including per-type values such as `@bm5e.damageDealt.fire`. `damageApplied` is unavailable because the save resolves before application.
+- Critical hits and instant-death damage are eligible unless explicitly excluded. `excludedDamageTypes` skips an application containing positive damage of any listed type, such as `radiant`.
+- If several configurations qualify, the first active effect's eligible configuration is used, followed by the actor flag as a fallback. A failed save does not try another protection. Each recipient resolves independently.
+- Save rerolls update the message but do not retroactively revise damage already applied. Resilience uses the existing mutable damage path, including Midi-QOL finalization; runtime testing with the installed Midi-QOL version is recommended.
+
+For continuous distribution, configure the source activity's template as an **Emanation** and add the system's **Apply Active Effect** behavior, selecting the configured effect. Use the activity to place its token-attached Region. The native behavior applies the effect on entry and removes its own effect on exit, using native disposition, size, and creature-type filters. Foundry handles Region membership and elevation. BM5E adds no range checks or recipient filters. The recipient effect retains its Resilience flag because the native behavior copies the source effect data. A benefit that persists after leaving the area should instead use an ordinary timed effect.
 
 #### Standard Damage Automations
 
@@ -251,11 +279,13 @@ The editor groups Event under **Trigger**, activity options under **Behaviours**
 
 All enabled filters must match (**AND**). Multiple choices within one filter match any selected value (**OR**). For example, selecting Tiny and Small sizes plus Opponent HP at or below 50% triggers only for a Tiny or Small opponent whose HP is at or below 50%. Disabled filters do not restrict triggers, and their saved choices return when re-enabled.
 
-**In Range** configures the activity's template as a token-attached radius emanation. Select source or in-range token turn starts and ends or tokens entering and leaving, set the triggers allowed for each token per turn, filter by creature size or type, and optionally include the source token. The activity's template size and units define the radius; its Range field does not. The Affects choice supplies the ally or enemy filter. Use the activity to place its emanation region. Movement events track tokens moving into or out of the region; moving the emanation over a stationary token does not itself fire those events.
+**In Range** runs the configured activity for creatures in a native Region. Add the In Range area behavior to the activity that places the template, and select its **Triggered Activity** from the same Item. Select source or in-range token turn starts and ends, token movement, or Region movement, set the triggers allowed for each token per turn, filter by creature size or type, and optionally include the source token. **On Creation** batches eligible creatures into one trigger and activity use while recording each creature's allowance. Source turn events process eligible Region members; token turn and movement events process only their triggering creature. All events share each creature's per-turn allowance. The template defines the area, and the triggered activity's Affects choice supplies the ally or enemy filter. Triggered spell activities retain the original cast's level. **Token Moves In/Out/Within** use native `TOKEN_MOVE_IN`/`TOKEN_MOVE_OUT`/`TOKEN_MOVE_WITHIN` events. Native Within includes movement toward an exit and excludes initial entry. **Region Moves Onto Token/Away From Token** use native `REGION_BOUNDARY` events and containment changes when the Region is translated, including attached emanation movement. Creation, resizing, Level/elevation changes, visibility changes, and wall-constraint refreshes do not count as Region movement. Native Apply Active Effect behavior remains independent of BM5E trigger limits.
 
 **Triggers per Token/Turn** is shared across the selected timings during each combat turn, including encounters not linked to a scene. Creating a trigger offer uses that allowance even if the activity is not used. Outside combat, this per-turn limit does not apply.
 
-**Total triggers before removal** deletes the emanation after the configured number of trigger offers across all tokens and turns, including outside combat. Set it to **0** for unlimited triggers. Each eligible token counts separately; filtered or unavailable activities do not count. The total persists on the emanation, and processing stops when the limit is reached.
+**Total triggers before removal** deletes the emanation after the configured number of trigger offers across all tokens and turns, including outside combat. Set it to **0** for unlimited triggers. Each offer counts once, including a batched On Creation offer; each creature in that batch still uses its own per-turn allowance. Filtered or unavailable activities do not count. The total persists on the emanation, and processing stops when the limit is reached.
+
+See [Templates and Emanations](#templates-and-emanations) for appearance, placement, and Region lifecycle settings.
 
 Trigger offers and automatic selections check configured consumption using native preparation on an item clone. Unavailable activities are omitted without spending resources. The system validates consumption again when the activity is used.
 
@@ -289,6 +319,38 @@ Damage-type keys use system identifiers such as `fire`, `cold`, and `necrotic`. 
 
 The **Ghostly Command** example is available in the **BM5E Overtime Test Items** compendium. Its description covers BM5E configuration only. The Weapon and Spell source filter also accepts non-attack weapon damage; reaction costs and timing are not enforced automatically.
 
+## Templates and Emanations
+
+### Appearance
+
+Items with a configured template show **Configure Appearance** below **Multiple**. Activities inherit the Item's settings unless their native **Override Targeting** option is enabled; an overriding activity can choose its own Custom, Palette, or Default mode. These settings affect future Regions, including automatically attached emanations. Existing Regions are unchanged.
+
+- **Custom** opens the native Region configuration for an unsaved draft. **Save Appearance** stores the settings and selects Custom; cancelling preserves the current mode. Clicking Custom again focuses the existing editor and preserves unsaved edits. No Region is created by the editor.
+- **Palette** saves a snapshot of the current Region Palette appearance. Click it again to capture later Palette changes. It preserves the placed activity's name, locking, shapes, attachments, elevation, wall restrictions, and behaviors.
+- **Default** uses normal dnd5e placement defaults while preserving saved Custom and Palette settings for later use.
+
+The selected mode is highlighted. Custom includes color, visibility, Hidden, Locked, highlight mode, measurements, wall restrictions, and grid-aware shapes. **Hidden also deactivates behaviors**, as stated in the native form. Foundry provides no per-Region opacity field.
+
+### Placement overrides
+
+Enable **Override Placement** in Custom to save Levels and bottom/top elevation, including whether the top is inclusive. Without an override, normal placement supplies these values. Attached emanations retain their source token's Level; a saved elevation override can still apply. Wall-restricted Regions require a single Level.
+
+Saved Level references use IDs in the original scene and unique matching Level names in another scene. If no matching Level can be resolved, normal placement remains in effect. Palette mode does not capture placement overrides.
+
+### Self emanations
+
+With Midi-QOL inactive and a usage token available, Self-range emanations use Foundry's `createTokenEmanation` API for the token's footprint, attachment, elevation, and Levels. This applies to all behaviors, including native Apply Active Effect. **Stationary** emanations use the full footprint without attaching; other emanations attach and move with the source token. Activities without a token retain normal placement.
+
+Using the casting activity again offers **Turn Off** or **Re-Cast**. Turn Off removes that activity's automatically created emanations on the usage token without consuming resources or creating another use card. Re-Cast uses normal configuration and consumption, replacing the previous emanations only after new creation succeeds. Cancelling preserves the existing emanation. Automatically triggered In Range uses do not recreate it.
+
+Concentration-linked Regions end with their cast's concentration. Removing an emanation also ends matching persistent Sequencer animations associated with its source Item and token, when Sequencer is active. Midi-QOL placement remains unchanged.
+
+### Targeting preview
+
+While positioning an activity template, BM5E previews eligible targets using the activity's target type and native Region containment, including wall restrictions, Levels, and elevation. Placing selects the final targets and updates the casting card; cancelling restores the previous selection. Automatically placed emanations select targets on creation.
+
+Moving an already placed Region does not change selected targets. In Range triggers and continuous native effect application operate independently of that selection. This temporary targeting adapter defers to Midi-QOL or RAT when either is active.
+
 ## Overtime Effects
 
 BM5E overtime effects create activities that trigger automatically during combat or encounter timing.
@@ -299,9 +361,9 @@ Create an Applied Active Effect on an Activity, then add a BM5E change with this
 flags.bm5e.overtime
 ```
 
-When the change type is **BM5E**, the editor uses that key automatically.
+Selecting the **BM5E** change type focuses the attribute key and offers overtime and resilience suggestions. Choose `flags.bm5e.overtime` for overtime; existing keys and values are preserved when changing types.
 
-D&D5e displays this key as **Overtime**. Selecting another change type clears an automatically populated overtime key, and the BM5E change-summary icon opens the corresponding overtime editor directly.
+D&D5e displays this key as **Overtime**. The BM5E change-summary icon opens the corresponding overtime editor directly.
 
 ### Activity Source
 
@@ -434,4 +496,4 @@ BM5E extends dnd5e enchantment activity cards so the user can choose a target an
 - BM5E passes the source chat message and concentration effect through to dnd5e's enchantment application.
 - By default, a matching enchantment from the same activity replaces the previous matching enchantment on that item.
 - **Allow Enchantment Stacks** permits repeated enchantments from the same activity on one item.
-- **Maximum Enchanted Items** limits how many different items an activity can enchant at once. Use `0` for no limit.
+- **Maximum Enchanted Items** limits how many different items an activity can enchant at once. Its default is `1`, and clearing the field restores that default. Use `0` for no limit.

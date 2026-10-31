@@ -1,3 +1,20 @@
+## 14.606.5
+
+- **Template appearance:** Choose Custom, Palette, or system defaults on Items, with wall restrictions, grid rules, optional Level/elevation settings, and per-activity overrides.
+- **Template targeting:** Preview eligible targets during placement, confirm targets on the casting card, and restore the previous selection on cancellation.
+- **Self emanations:** Automatically attach to the caster unless Stationary (Range: Self). Added Re-Cast/Turn Off controls, concentration cleanup, and cleanup of matching Sequencer animations. Defers to Midi-QOL when active.
+- **In Range:** Trigger another activity on the same Item. On Creation groups eligible targets into one use; triggered spells retain their casting level.
+- **Movement triggers:** Added Token Moves Within, Region Moves Onto Token, and Region Moves Away From Token. All timings share each token's per-turn limit.
+- **Spirit Guardians:** Added a compendium test Item with casting, triggered saves, spell-level damage scaling, and Half Speed.
+- **Compact cards:** Remain available when attack results are hidden, respecting the system's result visibility.
+- **Chat controls:** Fixed grouped activity-button labels and Save/Check highlighting after rolls.
+- **Personal settings:** Compact combined cards now follow each user across browsers, preserving existing client preferences on migration.
+- **Effect editor:** Preserved existing keys and JSON values, and improved DAE autocomplete compatibility.
+- **Roll dialogs:** Clearer labels for grapple escapes, grapple contests, and Undead Fortitude.
+- **Damage settings:** More compact menu, with hints available on hover.
+- **Resilience:** Configure an effect with `flags.bm5e.resilience` to grant a save when damage would reduce positive HP to 0. Success leaves 1 HP.
+- **Documentation:** Shortened README and moved detailed configuration rules into the [reference](docs/REFERENCE.md).
+
 ## 14.606.4
 
 - Grappled riders from Check activities now preserve their DC for 2024 escape attempts, matching Save activities.

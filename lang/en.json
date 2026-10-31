@@ -1,5 +1,42 @@
 {
 	"BM5E": {
+		"TemplateAppearance": {
+			"Configure": "Configure Appearance",
+			"TemplateOptions": "Template Options",
+			"Placement": "Placement",
+			"OverridePlacement": "Override Placement",
+			"PlacementHint": "Override native placement; attached emanations keep their token level.",
+			"LevelsHint": "Levels resolve by name when used in another scene.",
+			"WallsBlock": "Walls Block",
+			"WallsBlockHint": "Constrain the template using the selected wall restriction.",
+			"GridAware": "Grid Aware",
+			"GridAwareHint": "Follow the scene grid distance rules.",
+			"Buttons": {
+				"custom": "Custom",
+				"palette": "Palette",
+				"system": "Default"
+			},
+			"ButtonHints": {
+				"custom": "Configure custom template appearance.",
+				"palette": "Copy the current Region palette appearance.",
+				"system": "Use dnd5e template appearance defaults."
+			},
+			"Save": "Save Appearance"
+		},
+		"Emanations": {
+			"ActiveHint": "This activity is already active. Cast again to replace the previous emanation, or Turn Off.",
+			"Off": "Turn Off",
+			"Reapply": "Re-Cast",
+			"Failed": "The emanation could not be updated. See the console for details."
+		},
+		"Resilience": "Resilience",
+		"ResilienceEditor": {
+			"SaveAbility": "Save Ability",
+			"DCHint": "Enter a fixed DC or formula, such as 5 + @bm5e.damageDealt.total. Success leaves 1 HP; failure applies damage normally.",
+			"ExcludeCritical": "Exclude critical hits",
+			"ExcludeInstantDeath": "Exclude instant-death damage",
+			"ExcludedDamageTypes": "Excluded damage types"
+		},
 		"ItemTags": {
 			"Name": "Tags (BM5e)",
 			"Hint": "Enter a tag and click Add. Match it in enchantment preferences with tag:true-strike, for example. Tags are case-sensitive.",
@@ -51,7 +88,7 @@
 		"CompactCombinedCards": {
 			"Name": "Compact combined cards",
 			"Attack": "Attack {number}",
-			"Hint": "Show linked attack and damage rolls side by side, with target hit/miss indicators and damage previews in one row of pills, compact multiplier controls, and a checkmark beside damage for Apply and Restore actions. Applies immediately to this client."
+			"Hint": "Show linked attack and damage rolls side by side, with target hit/miss indicators and damage previews in one row of pills, compact multiplier controls, and a checkmark beside damage for Apply and Restore actions. Saved per user across browsers; applies immediately."
 		},
 		"ChatDoubleClick": {
 			"Name": "Enable chat document double-clicks",
@@ -159,9 +196,14 @@
 			"AttackOutcomeHit": "Hit",
 			"AttackOutcomeMiss": "Miss",
 			"InRange": "In Range",
+			"LinkedActivity": "Triggered Activity",
+			"ThisActivity": "This Activity",
+			"RegionCreated": "On Creation",
+			"RegionEnded": "This emanation is no longer active.",
 			"ForcedMovement": "Forced Movement",
 			"Movement": "Movement",
 			"AutoTarget": "Automatically target the other creature",
+			"AutoTargetTriggeringToken": "Automatically target triggering token",
 			"AutoTargetHint": "Receiver events target the source creature. Source events target the affected creature. Movement and In Range target the triggering token.",
 			"BypassConfigure": "Bypass configuration dialog",
 			"BypassConfigureHint": "Skips activity configuration choices such as advantage, scaling, and resource options.",
@@ -184,6 +226,9 @@
 			"TargetTurnEnd": "In-range Token Turn End",
 			"TargetMoveIn": "Token Moves In",
 			"TargetMoveOut": "Token Moves Out",
+			"TargetMoveWithin": "Token Moves Within",
+			"RegionMoveIn": "Region Moves Onto Token",
+			"RegionMoveOut": "Region Moves Away From Token",
 			"TriggersPerTokenTurn": "Triggers per Token/Turn",
 			"DeleteAfterTriggers": "Total triggers before removal",
 			"DeleteAfterTriggersHint": "Delete this emanation after this many trigger offers across all tokens and turns, including outside combat. Each eligible token counts separately, even if its offered activity is not used. Set to 0 for no limit.",
