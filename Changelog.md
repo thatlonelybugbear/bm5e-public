@@ -1,3 +1,50 @@
+## 14.610.1
+
+- Added official support for D&D5e 6.1.0 and Foundry VTT 14.370.
+
+### Updating items from compendiums
+
+- Added **Update from Compendium (BM5e)** to items in actor inventories and the world Items directory when they have a compendium source.
+- GMs can update all existing copies of a compendium item or all items from a particular compendium, including items on unlinked tokens.
+- Choose whether to keep the item's name, image or description. You can also keep Active Effect world/module flags and optionally limit module flags to enabled modules. This includes effects configured through the BM5e Effect Editor, such as Resilience.
+- Updates keep item identity and character state, including class levels, advancement choices, remaining resources, equipment, spell preparation, container contents and money. Current equipment HP and assigned crew are also retained.
+
+### Chat cards and rolls
+
+- Adopted D&D5e 6.1's native button labels and separate action/resource rows.
+- With **Show roll results on message buttons** enabled, buttons have equal widths and retain BM5e colors and roll tooltips. Disable it to keep the system's appearance.
+- Heal buttons now highlight after rolling. Resource controls turn green when consumed and Area/Template controls turn green after successful placement.
+- Restored reroll buttons on D&D5e 6.1 cards. Upcast damage rerolls now retain the original casting level.
+- Improved restoration of saved damage/effect application controls when loading chat history or changing scenes.
+
+### Reactions and In Range triggers
+
+- Attack reaction buttons now show the activity name, with AC details on hover. A completed reaction remains visible and turns green when button coloring is enabled.
+- **Show in chat** offers reactions on the attack card. Turning it off offers them in a separate message visible to the defender's owners.
+- Moved the optional **AC bonus for this attack** into Behaviours behind a checkbox. Renamed **Bypass configuration dialog** to **Bypass use dialog**.
+- The final In Range response remains usable after its trigger limit removes the area. It keeps the original targets and casting level. Cancelling allows another attempt while completed responses cannot be used twice.
+
+### Damage calculation
+
+- Updated damage defenses for D&D5e 6.1, including special defenses and controls that ignore or downgrade defenses for individual damage types or all damage.
+- Triggered damage reductions retain the information needed to apply those defenses correctly.
+
+## 14.606.6
+
+- Added Save succeeds / Save fails triggers with source activity filters and optional Apply Effect responses, supporting compendium AE UUIDs.
+- Added Apply Effect UUID linking to every overtime outcome selector.
+- Added a Contested Check activity using the system's Group check request cards, separate check choices, tie handling, and manual loser-effect application/removal.
+- Added an About to be hit trigger offering Shield style AC reactions on native attack cards, with normal activity consumption, reaction tracking, and target specific hit reevaluation.
+- Attack reactions automatically apply the cast's applicable effects to the defender, retaining native duration/scaling and counting their AC increase toward the configured attack bonus.
+- Kept attack reaction buttons visible in compact cards with automatically rolled damage, above the damage application controls.
+- Added optional excluded damage types to damage and attack triggers.
+- Added Use and Heals triggers, with source activity/type filters for Use.
+- Reaction uses in combat apply Reaction Used, expiring at the Actor's next turn start.
+- Resilience and Undead Fortitude now retain the system's saving throw title and identify the granting effect or feature.
+- Added a world toggle for template targeting. Defers to Midi-QOL only when its template targeting is enabled.
+- Damaged triggers can grant resistance to matching damage types for the triggering application, using normal damage calculation.
+- Added an Absorb Elements test Item with elemental resistance triggers and AC5E bonus damage to the compendium.
+
 ## 14.606.5
 
 - **Template appearance:** Choose Custom, Palette, or system defaults on Items, with wall restrictions, grid rules, optional Level/elevation settings, and per-activity overrides.

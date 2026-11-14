@@ -14,6 +14,7 @@ Requires Foundry VTT 14.367+ (v14), D&D5e 6.0.2+, and libWrapper. Verified with 
 - [Prone Mechanics](#prone-mechanics), [Grapple Mechanics](#grapple-mechanics), and [Falling Mechanics](#falling-mechanics): token-icon controls and condition automation.
 - [Activation Triggers](#activation-triggers): incoming and outgoing damage, healing, attack, movement, and in-range triggered activities.
 - [Templates and Emanations](#templates-and-emanations): appearance, placement overrides, concentration, and targeting previews.
+- [Contested Checks](#contested-checks): two-participant Group check requests, tie policies, and loser effects.
 - [Overtime Effects](#overtime-effects): automatic combat and encounter activity triggers from Active Effects.
 - [Enchantments](#enchantments): chat-card target and item selection for dnd5e enchantment activities.
 
@@ -21,7 +22,7 @@ Requires Foundry VTT 14.367+ (v14), D&D5e 6.0.2+, and libWrapper. Verified with 
 
 Settings are grouped into **Chat & Rolls**, **Token HUD**, **Damage Mechanics**, **Conditions & Effects**, and **Troubleshooting** menus. Existing saved preferences are retained. These menus save changes immediately; close them with the window's X. Token HUD changes update an open HUD without saving the main Game Settings form.
 
-All non-world settings are saved per user and follow that user across browsers, including **Compact combined cards**, other Chat & Rolls preferences, auto-popout defaults, and Token HUD preferences. **Hide chat-card tags for** remains a GM-controlled world setting, as do damage automation, condition mechanics, and troubleshooting options. Existing client-scoped Compact combined cards preferences migrate to the user on first load.
+All non-world settings are saved per user and follow that user across browsers, including **Compact combined cards**, other Chat & Rolls preferences, auto-popout defaults, and Token HUD preferences. **Hide chat-card tags for** and **Enable template targeting** remain GM-controlled world settings, as do damage automation, condition mechanics, and troubleshooting options. Existing client-scoped Compact combined cards preferences migrate to the user on first load.
 
 Personal settings do not require a reload. Label, reroll-control, and result-display changes refresh existing chat cards and open message popouts immediately. Automation and pop-out preferences apply to subsequent uses; document permissions still govern rolls and activity use. Individual chat-card expand/collapse choices remain browser-local.
 
@@ -58,7 +59,7 @@ Attack and Damage results, including their expandable rolls and application tray
 - Damage rerolls add or remove the Critical property pill to match the selected mode.
 - Concentration rerolls retain the concentration DC rather than adopting the originating spell's save DC.
 - Reroll controls are available only when the current user can update the roll message.
-- **Show chat action labels** adds text labels to compact Attack, Damage, Save, and Check controls for your user. Users without a saved preference inherit the previous world label preference, or enabled when none was saved.
+- Compact chat actions use D&D5e's native labels and separate action/resource rows, with equal button widths across rows when **Show roll results on message buttons** is enabled. Disabling it preserves native button sizing, colors, and tooltips.
 - With labels enabled, these buttons share the available row width; Template and Resource controls remain compact icon buttons.
 - **Hide chat-card tags for** is a world setting, disabled by default. GMs can select **GMs**, **Players**, or both under **Chat & Rolls** to hide item and activity tags, such as weapon type, range, and proficiency. Leave the selection empty to show tags to everyone. Changes apply immediately.
 - **Compact combined cards** is a per-user preference, off by default, and applies immediately. Linked attack and damage results share a row. Target pills show hit/miss and expected damage, with multipliers just below. The checkmark beside damage applies it; after a recorded application, it opens **Apply again / Restore** when **Enable damage restoration** is enabled. The amount is separated from the target name for readability.
@@ -68,7 +69,7 @@ Attack and Damage results, including their expandable rolls and application tray
 - Damage-history tooltips use the corresponding attack numbers and show **-** where damage has not been rolled. Separate damage entries follow afterward. Reroll menus outline the current advantage or critical mode.
 - When **Midi-QOL** is active, BM5E bypasses its combined and compact attack-card layout so Midi-QOL can manage its own cards.
 - **Show reroll controls** independently enables clickable dice controls and reroll menus for messages your user can update. Changing it refreshes existing cards and popouts without reloading.
-- **Show roll results on message buttons** controls Attack/Damage roll-history tooltips and green Save/Check indicators after a visible roll. It is separate from action labels.
+- **Show roll results on message buttons** controls Attack/Damage roll-history tooltips and green Save/Check indicators after a visible roll. Resources also turn green while consumed (the system displays Refund), and Template turns green after successful placement from that card. Cancelling placement does not mark it complete; deleting the placed region does not clear the placement history.
 - Attack controls indicate hits, misses, critical hits, and fumbles, including after rerolls. Attack and Damage tooltips show numbered totals and outcomes or Normal/Critical damage modes.
 - Open combined-card popouts refresh after attack and damage changes, including remote rerolls, while preserving native application trays and weapon mastery links.
 - Reroll dice show Automated Conditions 5e's roll attribution tooltip when permitted by its client preference and world visibility filter.
@@ -265,25 +266,41 @@ The **BM5E Triggers** activity activation type runs an activity in response to i
 
 Open the trigger editor from the activity's Activation Cost controls, then configure:
 
-- **Event**: Damaged, Damages, Healed, Attacked, Attacks, Movement, or In Range. Forced Movement is available only while BAA5E is active.
+- **Event**: Damaged, Damages, Healed, Heals, Use, Save succeeds, Save fails, Attacked, About to be hit, Attacks, Movement, or In Range. Forced Movement is available only while BAA5E is active.
+- **Use**: after the actor completes an activity use, offer other matching BM5E Triggers activities on that actor. Optional **Source Activities**, **Source Activity Types**, and **Source Item Types** filters restrict which uses qualify. Target filters and automatic targeting apply per target on the usage message; uses without targets have no opponent. Triggered activities cannot start another Use chain.
+- **Save succeeds / Save fails**: observe native ability saving throws with a known DC. **Saving throw made by** selects this actor's own saves or a target saving against this actor's activity. Source activity/type/item and opponent filters apply. Requires an active GM; Midi-QOL, concentration, and death saves are excluded. A response is offered once per activity, save message, and outcome; rerolls and Legendary Resistance can offer the other outcome. Existing applied effects are not reversed by later roll changes.
+- **Apply Effect** (save triggers): enable it and drop an Active Effect or paste its UUID, including an AE compendium UUID. After the response activity is used, the GM asynchronously resolves the effect and copies it to the saving actor with a fresh duration start. It does not require that actor's token to be rendered. Enable **Auto Roll** to use the response automatically, or use its trigger card manually. Normal activity consumption still applies. **Automatically target** controls the response activity's ordinary targets; Apply Effect always applies to the saving actor. Consumed resources do not repeat the application, and already-applied or stale responses cannot be activated again for the same outcome.
+
+For temporary immunity after a successful save, create a timed immunity AE with a `system.traits.ci.custom` change naming the protected effect. Add a Utility activity on the feature's actor, set its activation to BM5E Triggers, select **Save succeeds**, watch targets saving against this actor's activity, and filter **Source Activities** to the original save activity. Enable **Apply Effect** and link the immunity AE. Enable **Auto Roll** and **Bypass use dialog** if the response should run automatically. The D&D5e system handles suppression of matching effects; this does not prevent later save prompts or other damage.
+
+- **Heals**: outgoing healing triggers on the healer and can automatically target the recipient. **Healed** triggers on the recipient. Healing Types applies to both; Damages remains outgoing damage only.
+- **Offer in chat**: available for **About to be hit** triggers. Enabled by default, including existing activities. Disable it to hide the response button; manual activity use remains available.
+- **About to be hit**: with **Offer in chat** enabled, offers a manual AC reaction on a native attack card for each eligible owned target that was hit. Offers last one minute from the attack roll and end when another attack is rolled, whichever happens first. Pending reaction dialogs close at that point, and expired uses are blocked before resource consumption. This event always counts as a reaction. Configure the activity's **AC bonus for this attack**, a nonnegative deterministic number or formula using that activity's roll data. This is a minimum increase for the triggering attack; any prepared AC increase from the applied effects counts toward it rather than stacking with it. Set it to `0` to rely entirely on the effects' AC increase. It uses the normal casting/configuration dialog and consumption, and records Reaction Used in combat. It does not automatically roll the reaction or redirect its target to the attacker.
 - **Actor HP** and **Opponent HP**: independent optional comparisons of current HP to maximum HP, excluding temporary HP. Actor means the triggered activity owner; opponent means each creature involved in the event. Movement has no opponent. Existing HP filters retain their original subject.
 - **Opponent Sizes** and **Opponent Types**: optional per-opponent filters. Only matching opponents are included when an event involves several creatures.
 - **Attack Outcome**: All, Hit, or Miss for Attacks, evaluated per target; unknown outcomes match only All.
 - **Damage Types** or **Healing Types**: optional type filters for the corresponding events, including damage-type filtering on attack events.
+- **Exclude Damage Types**: optional veto for Damaged, Damages, Attacked, and Attacks. Any excluded type present suppresses the entire trigger, even when another type matches Damage Types. Damage events use resolved damage types; attack events use the activity's configured damage types. Disabling this filter preserves its choices. Healing events are unaffected.
 - **Source Item Types**: an optional filter for the item that produced a damage, healing, or attack event.
 - **Automatically target the other creature**: receiver events target the source creature, source events target the affected creature, and Movement or In Range targets the triggering token.
-- **Bypass configuration dialog**: skips activity configuration choices.
+- **Bypass use dialog**: skips the activity use dialog.
 - **Automatically roll activity**: immediately uses the activity after creating its Triggered chat message. When disabled, the message waits for user input.
 
 The editor groups Event under **Trigger**, activity options under **Behaviours**, and optional filters under **Toggle Filters**. Filter and reduction toggles retain their configured values when disabled.
 
 All enabled filters must match (**AND**). Multiple choices within one filter match any selected value (**OR**). For example, selecting Tiny and Small sizes plus Opponent HP at or below 50% triggers only for a Tiny or Small opponent whose HP is at or below 50%. Disabled filters do not restrict triggers, and their saved choices return when re-enabled.
 
+For a Shield-style reaction, set the Item to Reaction, its casting activity to BM5E Triggers, the event to **About to be hit**, and the AC bonus to `5`. Keep native spell-slot/resource consumption on the casting activity. After an attack hits, the defender's owner or a GM can click the shield button on its attack card (including an embedded attack summary). After successful casting, BM5E automatically applies all effects listed on that cast's usage message to the defender through native effect preparation. That retains native scaling, duration, origin, and existing-effect refresh behavior. The defender's resulting AC increase counts toward the configured attack bonus, preventing a Shield effect and a configured `5` from becoming `+10`. The resulting bonus updates only that defender's recorded AC on that attack; native hit/miss evaluation and linked card/application outcomes refresh. It preserves other targets, attack totals, cover already included in the recorded AC, and natural critical hits. The automatically applied effects persist according to their configured duration and also cover subsequent attacks. Applications are recorded for the casting card's existing Remove Applied Effects control. Only effects applicable to that cast are applied; additional protections such as against Magic Missile depend on the configured effects.
+
+These buttons follow the native Legendary Resistance pattern: eligibility is checked on display and revalidated on use, the button is disabled during its action, and the result is persisted on the relevant message. A defender player keeps their normal casting dialog; an active GM validates changes to another user's attack message. Cancellations do not spend a reaction or change the attack. Competing requests for one defender and updates by different defenders are serialized. If the attack is rerolled or its target changes while the reaction is being cast, BM5E leaves the changed attack alone; inspect the reaction's casting card/resources rather than assuming its completed use was undone. React before applying damage: existing HP loss is not reversed. This initial integration supports native D&D5e single-roll attack messages and is disabled with Midi-QOL.
+
 **In Range** runs the configured activity for creatures in a native Region. Add the In Range area behavior to the activity that places the template, and select its **Triggered Activity** from the same Item. Select source or in-range token turn starts and ends, token movement, or Region movement, set the triggers allowed for each token per turn, filter by creature size or type, and optionally include the source token. **On Creation** batches eligible creatures into one trigger and activity use while recording each creature's allowance. Source turn events process eligible Region members; token turn and movement events process only their triggering creature. All events share each creature's per-turn allowance. The template defines the area, and the triggered activity's Affects choice supplies the ally or enemy filter. Triggered spell activities retain the original cast's level. **Token Moves In/Out/Within** use native `TOKEN_MOVE_IN`/`TOKEN_MOVE_OUT`/`TOKEN_MOVE_WITHIN` events. Native Within includes movement toward an exit and excludes initial entry. **Region Moves Onto Token/Away From Token** use native `REGION_BOUNDARY` events and containment changes when the Region is translated, including attached emanation movement. Creation, resizing, Level/elevation changes, visibility changes, and wall-constraint refreshes do not count as Region movement. Native Apply Active Effect behavior remains independent of BM5E trigger limits.
 
 **Triggers per Token/Turn** is shared across the selected timings during each combat turn, including encounters not linked to a scene. Creating a trigger offer uses that allowance even if the activity is not used. Outside combat, this per-turn limit does not apply.
 
 **Total triggers before removal** deletes the emanation after the configured number of trigger offers across all tokens and turns, including outside combat. Set it to **0** for unlimited triggers. Each offer counts once, including a batched On Creation offer; each creature in that batch still uses its own per-turn allowance. Filtered or unavailable activities do not count. The total persists on the emanation, and processing stops when the limit is reached.
+
+When **Delete after triggers** removes the Region at its limit, the final response keeps a snapshot of its source activity/token, casting level, targets, and event in the trigger message. That response can complete once after cleanup, including after reload. Cancelling its activity dialog permits retry; a completed use is persisted and cannot consume resources again. Competing users are coordinated through the active GM. Older offers from an otherwise deleted Region remain unavailable.
 
 See [Templates and Emanations](#templates-and-emanations) for appearance, placement, and Region lifecycle settings.
 
@@ -317,7 +334,69 @@ Damage-type keys use system identifiers such as `fire`, `cold`, and `necrotic`. 
 
 **Reduce Incoming Damage** on a Damaged trigger supports formulas such as `min(10, ceil(@bm5e.damageIncoming.total / 2))` for Ghostly Command. This requires Mutable Damage Calculation. With Auto Roll disabled, you are prompted before using the activity; declining or having insufficient configured resources leaves damage unchanged. Healing does not trigger the reduction. Selected damage types share one reduction budget; no types selected means all damage types.
 
+**Resist Incoming Damage** uses the same pre-application casting flow and requires Mutable Damage Calculation. After a successful activity use, BM5E recalculates the original damage with resistance added only to that calculation's copied traits. With the Damage Types filter enabled, only matching selected types gain resistance; otherwise, all incoming damage types gain it. Existing resistance does not stack, and native immunity, vulnerability, rounding, and resistance bypasses remain in control. Declining or cancelling the activity grants no resistance.
+
+This option does not create a lasting Active Effect. Apply any associated resistance effect through the native activity Effects tray for later damage. For resistance alone, leave **Reduce Incoming Damage** disabled; enabling both also applies the numeric reduction after resistance. In combat, BM5E applies Reaction Used automatically; it expires at the Actor's next turn start.
+
 The **Ghostly Command** example is available in the **BM5E Overtime Test Items** compendium. Its description covers BM5E configuration only. The Weapon and Spell source filter also accepts non-attack weapon damage; reaction costs and timing are not enforced automatically.
+
+For **About to be hit**, **Show in chat** places the reaction button directly on the eligible attack card. Disabling it offers the reaction in a separate native turn/rest activity message whispered to the defender's owners. Both chat paths use the same casting, reaction consumption, AC update, and stale-offer guards. Using the activity directly from its sheet does not update the recorded attack result.
+
+## Updating Items from Compendiums
+
+**Update from Compendium (BM5e)** appears on editable sourced items in actor inventories and the world Items directory. The source is read from `_stats.compendiumSource`, with legacy `flags.core.sourceId` support. Updating replaces the item's name, image, system rules, activities, effects and flags, including local customizations. Item identity, ownership, world folder, sort order, quantity, equipment, attunement, preparation, container, item spent uses, class levels, spent hit dice, applied advancement values with matching IDs and types and spent uses for activities with matching IDs are retained.
+
+Updates also automatically retain spell preparation method, source item, component supply, identification state, container currency, current equipment HP and assigned crew where the source supports those fields. Other source rules (including component cost, maximum HP and maximum crew) still update.
+
+For GMs, **Update Sourced Items (BM5e)** is also available on an Item compendium in the Compendium directory and on an individual Item inside it. The pack action updates existing world and actor items sourced from that pack; the entry action updates existing copies of that source item. These actions do not import missing items or modify compendium contents. One confirmation shows the number of matched items, followed by a completion summary.
+
+Updates reset local customizations to the source version. Optional preservation choices retain the existing name (`preserve.name`), image (`preserve.img`) and description (`preserve.description`). Item/activity flags, activities and other effect rules reset. The preservation checkbox (`preserve.effectChanges`) retains existing Active Effect world/module flag data (including flag-only Resilience configuration) and change rows targeting `flags.world.*` or `flags.<moduleId>.*`, excluding `flags.dnd5e.*` and `flags.core.*`. An additional checkbox (`preserve.activeModulesOnly`) limits module rows to currently enabled modules; world rows always qualify. Effect enabled/disabled status does not determine eligibility. Both options default to false and work with `confirm: false`. Selecting `activeModulesOnly` also enables preservation on its own. The `ac5e` namespace is associated with the `automated-conditions-5e` module ID.
+
+Effects match by embedded ID. Matching effects receive the source configuration and source changes, then qualifying local rows override any source rows with the same attribute key. Other source rows remain. Unmatched local effects survive only if they contain qualifying flag data or rows and retain their effect context with all other change rows removed. No name matching is attempted. Review unmatched effects if source IDs changed. Bulk choices apply to every matched item and any individual fallback updates. Existing `dnd5e.advancementOrigin` and `dnd5e.advancementRoot` links are always retained independently of these options.
+
+The API is available after `ready`:
+
+```js
+// All editable sourced items, including game.items and actor inventories.
+const report = await bm5e.updateItemsFromCompendium();
+
+// Only copies of one compendium item (legacy compendium UUIDs also work).
+await bm5e.updateItemsFromCompendium({
+  sourceUuid: "Compendium.my-module.my-items.Item.SOURCE_ITEM_ID"
+});
+
+// Only items sourced from a particular Item pack.
+await bm5e.updateItemsFromCompendium({ compendium: "my-module.my-items" });
+
+// World Items directory only; skip the confirmation for a scripted update.
+await bm5e.updateItemsFromCompendium({
+  compendium: "my-module.my-items",
+  actorItems: false,
+  confirm: false
+});
+
+// Actor items only.
+await bm5e.updateItemsFromCompendium({ worldItems: false });
+
+// Allow partial completion by retrying unconfirmed items individually if the batch fails.
+await bm5e.updateItemsFromCompendium({
+  compendium: "my-module.my-items",
+  fallbackToIndividualUpdates: true
+});
+
+// One world or embedded Item document.
+await bm5e.updateItemFromCompendium(item, { confirm: false });
+
+// Preserve local customizations; these options also preselect the dialog checkboxes.
+await bm5e.updateItemsFromCompendium({
+  compendium: "my-module.my-items",
+  preserve: { effectChanges: true, activeModulesOnly: true }
+});
+```
+
+`worldItems`, `actorItems` and `confirm` default to `true`. Actor scope includes world actor inventories and unlinked token actor inventories across scenes; each item UUID is updated once. Source UUID and compendium filters combine when both are supplied. Invalid filters reject before any updates. Missing sources, type mismatches and preparation errors are reported before submitting the remaining valid updates. Writes use `foundry.documents.modifyBatch` with update operations grouped by parent, retaining existing item IDs. Batch write failures do not automatically trigger individual retries. `fallbackToIndividualUpdates` defaults to `false`; enabling it retries only items not confirmed updated, permits partial completion and reports each result separately. Only items the calling user can update are included; this API does not elevate permissions.
+
+The batch report contains `matched`, `cancelled` and `updated`, `skipped` and `failed` arrays. Array entries contain the target item `uuid` and a `status`; failures may include an `error`. A single-item call returns one such entry. Item data is prepared with `game.items.fromCompendium(source, { clearFolder: true })`; source compendium folders and ownership are not applied to the existing item.
 
 ## Templates and Emanations
 
@@ -325,9 +404,11 @@ The **Ghostly Command** example is available in the **BM5E Overtime Test Items**
 
 Items with a configured template show **Configure Appearance** below **Multiple**. Activities inherit the Item's settings unless their native **Override Targeting** option is enabled; an overriding activity can choose its own Custom, Palette, or Default mode. These settings affect future Regions, including automatically attached emanations. Existing Regions are unchanged.
 
-- **Custom** opens the native Region configuration for an unsaved draft. **Save Appearance** stores the settings and selects Custom; cancelling preserves the current mode. Clicking Custom again focuses the existing editor and preserves unsaved edits. No Region is created by the editor.
+- **Custom** opens an appearance editor with Appearance and Template Options tabs. Changes save automatically and select Custom. Closing without changes preserves the current mode. Clicking Custom again focuses the existing editor. No Region is created by the editor.
 - **Palette** saves a snapshot of the current Region Palette appearance. Click it again to capture later Palette changes. It preserves the placed activity's name, locking, shapes, attachments, elevation, wall restrictions, and behaviors.
 - **Default** uses normal dnd5e placement defaults while preserving saved Custom and Palette settings for later use.
+
+On Foundry 14.370+, the GM's world setting **Default template Grid Aware** can enable or disable grid-aware shapes for new templates and emanations using **Default** appearance. **System Default** preserves native placement behavior. Custom and Palette modes are unaffected; existing Regions are unchanged. Target previews use the same preference.
 
 The selected mode is highlighted. Custom includes color, visibility, Hidden, Locked, highlight mode, measurements, wall restrictions, and grid-aware shapes. **Hidden also deactivates behaviors**, as stated in the native form. Foundry provides no per-Region opacity field.
 
@@ -347,9 +428,21 @@ Concentration-linked Regions end with their cast's concentration. Removing an em
 
 ### Targeting preview
 
+**Enable template targeting** is a world setting in the main BM5E module settings, enabled by default. Disable it when another module handles template targeting. Changes apply without a reload; disabling it during placement stops the preview and restores the previous selection. It does not disable In Range triggers or native Region effect behaviors.
+
 While positioning an activity template, BM5E previews eligible targets using the activity's target type and native Region containment, including wall restrictions, Levels, and elevation. Placing selects the final targets and updates the casting card; cancelling restores the previous selection. Automatically placed emanations select targets on creation.
 
-Moving an already placed Region does not change selected targets. In Range triggers and continuous native effect application operate independently of that selection. This temporary targeting adapter defers to Midi-QOL or RAT when either is active.
+Moving an already placed Region does not change selected targets. In Range triggers and continuous native effect application operate independently of that selection.
+
+When Midi-QOL is active, BM5E defers only if its effective **Auto target on template draw** option is enabled. Midi stores the global option as `ConfigSettings.autoTarget`; `none` disables it. An activity's `midiProperties.autoTargetAction` can override that global choice, with `default` inheriting it. If Midi targeting is disabled for the activity, BM5E can target when its own world setting is enabled.
+
+## Contested Checks
+
+Create a **Contested Check** activity and configure the initiator and opponent checks on its Effect tab. Each side can use an ability, a skill/tool, or a choice of skills/tools. Choose whether ties have no winner or favor either side. Add the effects to apply to the loser using the normal activity effect editor.
+
+Target exactly one other creature and use the activity with an active GM connected. Normal activity resources are consumed once. BM5E posts one request card using the system's Group skill-check interface, with one row for each participant. Each creature's owner or the GM rolls its check; multiple configured skills/tools prompt that participant to choose. The card compares totals without imposing a DC and offers **Apply effects to loser** to the initiator's owner and the GM once both results are visible.
+
+Use **Remove applied contest effects** to remove created effects or restore effects refreshed by this contest. Reroll the existing check messages to change the comparison; rerolls never move or reapply effects automatically. Remove an existing application before explicitly applying effects to a new loser. Cancelled rolls remain pending, deleted roll messages allow a new attempt, and the request's accepted results survive reloads. This initial implementation supports two participants and requires an active GM for coordination.
 
 ## Overtime Effects
 
@@ -428,6 +521,7 @@ Aliases include `start`, `end`, `sourceStart`, `sourceEnd`, `eachStart`, `eachEn
 Outcomes can apply status effects, apply linked activity effects, or remove the overtime effect.
 
 - `onEachSuccess=prone` applies on every success.
+- **Apply Effect** is available in every outcome selector (success/failure, each result, consecutive results, and trigger outcomes). Select it, then drop an Active Effect or paste its UUID. The referenced effect is copied to the affected actor with its configured duration starting at application. It can be combined with statuses and Remove Overtime. For example: `onEachSuccess=applyEffect:Item.example.ActiveEffect.immunity`. Each application creates a new effect, matching existing linked-effect outcomes; it does not toggle an existing immunity off.
 - `onEachFailure=poisoned` applies on every failure.
 - `overallSuccessTarget=2` counts total successes.
 - `overallFailureTarget=2` counts total failures.
@@ -497,3 +591,7 @@ BM5E extends dnd5e enchantment activity cards so the user can choose a target an
 - By default, a matching enchantment from the same activity replaces the previous matching enchantment on that item.
 - **Allow Enchantment Stacks** permits repeated enchantments from the same activity on one item.
 - **Maximum Enchanted Items** limits how many different items an activity can enchant at once. Its default is `1`, and clearing the field restores that default. Use `0` for no limit.
+
+### Magical overtime activities
+
+`magical=true` toggles the generated activity's magical state relative to its linked Item's magical property. The overtime editor exposes this as a checkbox. Automated Conditions 5e can read that state through its `prepareEvaluationState` hook.
