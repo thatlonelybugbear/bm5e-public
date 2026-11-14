@@ -1,4 +1,4 @@
-## 14.610.1
+## 14.610.1.1
 
 - Added official support for D&D5e 6.1.0 and Foundry VTT 14.370.
 
@@ -8,6 +8,13 @@
 - GMs can update all existing copies of a compendium item or all items from a particular compendium, including items on unlinked tokens.
 - Choose whether to keep the item's name, image or description. You can also keep Active Effect world/module flags and optionally limit module flags to enabled modules. This includes effects configured through the BM5e Effect Editor, such as Resilience.
 - Updates keep item identity and character state, including class levels, advancement choices, remaining resources, equipment, spell preparation, container contents and money. Current equipment HP and assigned crew are also retained.
+
+### Active Effect sheet
+
+- Added the **BM5e Active Effect** sheet with separate sections for attribute changes, applied statuses and rider items.
+- Customize individual status names, icons and icon visibility. Mark statuses as **Separate** to keep them after the effect is deleted or **Defining** to suppress the whole effect while the actor is immune to them.
+- Grant rider items while an effect is active, hide them while it is inactive and remove them when it is deleted.
+- Added a **BM5e + DAE Active Effect** sheet option for use with DAE.
 
 ### Chat cards and rolls
 

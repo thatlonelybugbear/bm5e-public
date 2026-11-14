@@ -55,6 +55,15 @@ Open **Game Settings > Module Settings > Bugbear's Mechanics for 5e**:
 
 [Condition options](docs/REFERENCE.md#grapple-mechanics)
 
+## Active Effect Sheet
+
+- The **BM5e Active Effect** sheet organizes attribute changes, applied statuses and rider items in the **Changes** tab.
+- Edit each status's display name, icon and icon visibility. **Separate** keeps the status after the effect is deleted; **Defining** suppresses the entire effect while the actor is immune to that status.
+- Drop items into **Rider Items** to grant them while the effect is active. They are hidden while it is inactive and removed when it is deleted.
+- With DAE, choose **BM5e + DAE Active Effect** in the effect's sheet configuration to combine both sheets' controls.
+
+[Active Effect sheet options](docs/REFERENCE.md#active-effect-sheet)
+
 ## Activation Triggers
 
 1. Set an activity's activation type to **BM5E Triggers** and open its trigger editor.

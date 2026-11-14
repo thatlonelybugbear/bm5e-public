@@ -2,7 +2,7 @@
 
 This reference covers detailed behavior, configuration keys, formulas, and integration hooks. Start with the [user guide](../README.md) for everyday setup and use.
 
-Requires Foundry VTT 14.367+ (v14), D&D5e 6.0.2+, and libWrapper. Verified with Foundry 14.369 and D&D5e 6.0.6.
+Requires Foundry VTT 14.367+ (v14), D&D5e 6.1.0 and libWrapper. Verified with Foundry 14.370.
 
 ## Table of Contents
 
@@ -16,7 +16,20 @@ Requires Foundry VTT 14.367+ (v14), D&D5e 6.0.2+, and libWrapper. Verified with 
 - [Templates and Emanations](#templates-and-emanations): appearance, placement overrides, concentration, and targeting previews.
 - [Contested Checks](#contested-checks): two-participant Group check requests, tie policies, and loser effects.
 - [Overtime Effects](#overtime-effects): automatic combat and encounter activity triggers from Active Effects.
+- [Active Effect Sheet](#active-effect-sheet): status customization, defining statuses and rider items.
 - [Enchantments](#enchantments): chat-card target and item selection for dnd5e enchantment activities.
+
+## Active Effect Sheet
+
+**BM5e Active Effect** is registered as the default sheet. If an effect uses another sheet, select it in that effect's sheet configuration. With a supported DAE sheet available, **BM5e + DAE Active Effect** combines the BM5e controls with DAE's sheet and can be selected there as well.
+
+The **Changes** tab separates **Attribute Changes**, **Apply Statuses** and **Rider Items**:
+
+- Add statuses with the plus button. Edit a status using its edit button or right-click menu; the menu also offers duplication onto an unused status and removal.
+- **Display Name**, **Icon** and icon visibility customize this effect's status. **Inherit from System Status** uses the system status's visibility. The parent effect's icon is configured separately.
+- **Separate** creates a status that remains after the parent effect is deleted. This option is available where the system supports separate statuses.
+- **Defining** suppresses the entire effect while its actor is immune to any selected defining status.
+- For base effects, drop item documents or enter item UUIDs in **Rider Items**. Granted items are hidden while the effect is inactive and removed when it is deleted.
 
 ## Module Settings
 
