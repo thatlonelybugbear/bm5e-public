@@ -2,7 +2,7 @@
 
 Automation and quality-of-life tools for Foundry VTT's D&D5e system: reusable chat cards, damage protections, condition controls, triggered activities, overtime effects and enchantments.
 
-- **Requires:** Foundry VTT 14.367+ (v14), D&D5e 6.1.0 and libWrapper. Verified for Foundry 14.370.
+- **Requires:** Foundry VTT 14.367+ (v14), D&D5e 6.1.0+ and libWrapper. Verified for Foundry 14.370 and D&D5e 6.1.1.
 - **Configuration details:** [Online reference](docs/REFERENCE.md). The in-game Documentation journal contains this compact guide.
 
 ## Installation and Support
@@ -20,10 +20,9 @@ Automation and quality-of-life tools for Foundry VTT's D&D5e system: reusable ch
 Open **Game Settings > Module Settings > Bugbear's Mechanics for 5e**:
 
 - **Chat & Rolls:** compact cards, rerolls, automatic damage dialogs, double-clicks and popouts.
-- **Token HUD:** searchable statuses with labels and sorting.
 - **Damage Mechanics:** damage protections and automation.
 - **Conditions & Effects:** prone, grappling, falling, enchantments and item materials.
-- Changes save immediately. Personal chat/HUD preferences follow your user across browsers.
+- Changes save immediately. Personal chat preferences follow your user across browsers.
 - Start with **Compact combined cards** and attack a targeted token. Use the compendium examples for more involved setups.
 
 ## Chat Cards and Rolls
@@ -48,7 +47,7 @@ Open **Game Settings > Module Settings > Bugbear's Mechanics for 5e**:
 
 ## Conditions and Token Controls
 
-- **Status HUD Sorting:** labeled conditions with search, sorting and adjustable layout.
+- **Status HUD:** use BASES for labels, search, sorting and adjustable layout. BM5e retains your previous HUD settings for import into BASES.
 - **Prone:** automatically switch to crawling. Click the active Prone icon to stand when enough movement remains.
 - **Grappling:** click Grappled to attempt an escape; an active GM is required. Spending the action remains manual.
 - **Falling:** the GM can optionally right-click Falling to land harmlessly. Normal falling is handled by the system.
@@ -69,7 +68,10 @@ Open **Game Settings > Module Settings > Bugbear's Mechanics for 5e**:
 1. Set an activity's activation type to **BM5E Triggers** and open its trigger editor.
 2. Choose an event, filters and whether to offer the activity or use it automatically.
 
-- Events cover damage, healing, attacks, saves, activity use, movement and **In Range**.
+- Events cover attacks, damage, healing, checks, saves, initiative, activity use, movement, falling damage and **In Range**.
+- Filter roll results, damage amounts and actor/opponent states. Optionally add an **AC5e condition** when AC5e is enabled.
+- Choose whether a response **Counts as a reaction**. With Mutable Damage Calculation, responses can reduce incoming damage or grant resistance/immunity for that application.
+- **Actor Falls** responds after descent; damage protection can run before HP changes.
 - **About to be hit** offers reactions such as Shield. Choose an attack-card button or a separate reaction message.
 - **In Range:** add the area behavior to the activity placing the template and select a triggered activity from the same item.
 - Start with **Spirit Guardians**, **Ghostly Command** or **Absorb Elements** in the example compendium. Their descriptions explain their setup.
@@ -87,7 +89,7 @@ Open **Game Settings > Module Settings > Bugbear's Mechanics for 5e**:
 
 ## Overtime Effects
 
-- Start with an example from **BM5E Overtime Test Effects** or **BM5E Overtime Test Items**.
+- Start with an example from **Effects (BM5e)** or **Items (BM5e)**.
 - Open its Active Effect, choose a **BM5E** change and select `flags.bm5e.overtime`. The change-summary icon opens the editor.
 - Choose an activity, timing and outcome: for example, an end-of-turn save that removes the effect on success.
 - Alternatively, set an item's activity activation type to **BM5E Overtime**.

@@ -6,7 +6,7 @@ Requires Foundry VTT 14.367+ (v14), D&D5e 6.1.0 and libWrapper. Verified with Fo
 
 ## Table of Contents
 
-- [Module Settings](#module-settings): chat icon double-clicks, damage automation, mutable damage hooks, chat popouts, and status HUD sorting.
+- [Module Settings](#module-settings): chat icon double-clicks, damage automation, mutable damage hooks, chat popouts and condition mechanics.
 - [Chat Roll Controls](#chat-roll-controls): compact-card labels and in-place rerolls.
 - [Damage Automations](#damage-automations): Arcane Ward, Death Ward, Undying Sentinel, Undead Fortitude, Elemental Adept, and Massive Damage.
 - [Damage Application Restore](#damage-application-restore) and [Effect Application Controls](#effect-application-controls): Apply, Restore, and Remove controls and player permissions.
@@ -33,7 +33,7 @@ The **Changes** tab separates **Attribute Changes**, **Apply Statuses** and **Ri
 
 ## Module Settings
 
-Settings are grouped into **Chat & Rolls**, **Token HUD**, **Damage Mechanics**, **Conditions & Effects**, and **Troubleshooting** menus. Existing saved preferences are retained. These menus save changes immediately; close them with the window's X. Token HUD changes update an open HUD without saving the main Game Settings form.
+Settings are grouped into **Chat & Rolls**, **Damage Mechanics**, **Conditions & Effects** and **Troubleshooting** menus. Existing saved preferences are retained. These menus save changes immediately; close them with the window's X. Token HUD presentation is configured in BASES; BM5e's legacy HUD settings are hidden but retained per user.
 
 All non-world settings are saved per user and follow that user across browsers, including **Compact combined cards**, other Chat & Rolls preferences, auto-popout defaults, and Token HUD preferences. **Hide chat-card tags for** and **Enable template targeting** remain GM-controlled world settings, as do damage automation, condition mechanics, and troubleshooting options. Existing client-scoped Compact combined cards preferences migrate to the user on first load.
 
@@ -234,18 +234,11 @@ For an example of the overtime integration, a successful **Escape Restraint** ch
 
 ### Status HUD Sorting
 
-When **Enable Status HUD Sorting** is enabled, BM5E replaces the token status palette layout with a labeled, sorted grid.
+Status labels, sorting, filtering, scaling and the Clear Effects control have moved to **Bugbear's Assign Status Effects Sorter (BASES)** so the same HUD code no longer needs maintenance in two modules.
 
-- Status effects are labeled under their icons.
-- Cover, bonus action used, and reaction used are pinned first.
-- Other statuses sort alphabetically by label.
-- Unknown or custom active effects are kept visible and sorted after known statuses.
-- Exhaustion uses dnd5e's exhaustion image for the actor's current exhaustion level.
-- Concentration and exhaustion keep their dnd5e management behavior.
+BM5e retains its saved HUD preferences per user for BASES to offer a one-time import when first enabled. These settings are hidden in BM5e. Enable BASES to use its HUD presentation, or use the native HUD without BASES.
 
-**Status Effects sorting** controls whether the grid fills by rows or by columns. **Number of columns** controls the grid width. **HUD scale** scales the palette and adjusts against canvas zoom. **Enable status filter** adds a search box, Escape clears or closes the palette, Enter applies the first visible match, and **Clear effects** removes current actor statuses and custom HUD effects.
-
-The status palette is constrained to the visible viewport and gains vertical scrolling when its configured rows, columns, scale, or current canvas zoom would otherwise place it off-screen.
+A localized notice explains this change on world load. **Close** leaves it available for future loads. **Close and don't show again** dismisses it for the current user. BM5e continues to provide prone, grapple and falling interactions independently of the sorter.
 
 ### Prone Mechanics
 
@@ -273,18 +266,25 @@ GMs can right-click a token's Falling icon to land harmlessly at the system's su
 
 **Overtime Debug Logging** enables BM5E overtime debug logs. It can be combined with channel flags through `globalThis.bm5e.debug`.
 
+### AC5e Condition Debug Logging
+
+Set `bm5e.debug.ac5eEvaluations = true` in the browser console to log each enabled condition evaluation. Set it to `false` to stop logging. Logging is disabled by default and does not require the overtime debug setting.
+
+Each entry includes the condition, activity UUID/name, event and evaluated result. Effect UUID/name are included when an effect context is supplied; activity triggers normally have no effect context. The sandbox is a detached, recursively frozen snapshot taken before the condition runs. Documents are serialized, functions are marked, unavailable getters show an explanation and deeply nested data is capped. Expanding an older log does not read the current documents or rerun getters.
+
 ## Activation Triggers
 
 The **BM5E Triggers** activity activation type runs an activity in response to incoming or outgoing damage, healing, attacks, movement, or tokens within an emanation.
 
 Open the trigger editor from the activity's Activation Cost controls, then configure:
 
-- **Event**: Damaged, Damages, Healed, Heals, Use, Save succeeds, Save fails, Attacked, About to be hit, Attacks, Movement, or In Range. Forced Movement is available only while BAA5E is active.
+- Events are grouped under **Actor is the source** and **Actor is the target**. Saving throws and In Range remain separate because their roles depend on their configuration.
+- **Event**: Actor Attacks, Actor Damages, Actor Heals, Actor Moves, Actor Uses, Is Attacked, Is About to Be Hit, Is Damaged, Is Healed, Saving throw succeeds, Saving throw fails or In Range. Is Moved (Forced) is available only while BAA5E is active.
 - **Use**: after the actor completes an activity use, offer other matching BM5E Triggers activities on that actor. Optional **Source Activities**, **Source Activity Types**, and **Source Item Types** filters restrict which uses qualify. Target filters and automatic targeting apply per target on the usage message; uses without targets have no opponent. Triggered activities cannot start another Use chain.
-- **Save succeeds / Save fails**: observe native ability saving throws with a known DC. **Saving throw made by** selects this actor's own saves or a target saving against this actor's activity. Source activity/type/item and opponent filters apply. Requires an active GM; Midi-QOL, concentration, and death saves are excluded. A response is offered once per activity, save message, and outcome; rerolls and Legendary Resistance can offer the other outcome. Existing applied effects are not reversed by later roll changes.
+- **Saving throw succeeds / Saving throw fails**: observe native ability saving throws with a known DC. **Whose save?** selects **Actor** for the owner's own saves or **Target of the actor's activity** for a target saving against an activity used by the owner. Source activity/type/item and opponent filters apply. Requires an active GM; Midi-QOL, concentration, and death saves are excluded. A response is offered once per activity, save message, and outcome; rerolls and Legendary Resistance can offer the other outcome. Existing applied effects are not reversed by later roll changes.
 - **Apply Effect** (save triggers): enable it and drop an Active Effect or paste its UUID, including an AE compendium UUID. After the response activity is used, the GM asynchronously resolves the effect and copies it to the saving actor with a fresh duration start. It does not require that actor's token to be rendered. Enable **Auto Roll** to use the response automatically, or use its trigger card manually. Normal activity consumption still applies. **Automatically target** controls the response activity's ordinary targets; Apply Effect always applies to the saving actor. Consumed resources do not repeat the application, and already-applied or stale responses cannot be activated again for the same outcome.
 
-For temporary immunity after a successful save, create a timed immunity AE with a `system.traits.ci.custom` change naming the protected effect. Add a Utility activity on the feature's actor, set its activation to BM5E Triggers, select **Save succeeds**, watch targets saving against this actor's activity, and filter **Source Activities** to the original save activity. Enable **Apply Effect** and link the immunity AE. Enable **Auto Roll** and **Bypass use dialog** if the response should run automatically. The D&D5e system handles suppression of matching effects; this does not prevent later save prompts or other damage.
+For temporary immunity after a successful save, create a timed immunity AE with a `system.traits.ci.custom` change naming the protected effect. Add a Utility activity on the feature's actor, set its activation to BM5E Triggers, select **Saving throw succeeds**, watch targets saving against this actor's activity, and filter **Source Activities** to the original save activity. Enable **Apply Effect** and link the immunity AE. Enable **Auto Roll** and **Bypass use dialog** if the response should run automatically. The D&D5e system handles suppression of matching effects; this does not prevent later save prompts or other damage.
 
 - **Heals**: outgoing healing triggers on the healer and can automatically target the recipient. **Healed** triggers on the recipient. Healing Types applies to both; Damages remains outgoing damage only.
 - **Offer in chat**: available for **About to be hit** triggers. Enabled by default, including existing activities. Disable it to hide the response button; manual activity use remains available.
@@ -292,16 +292,56 @@ For temporary immunity after a successful save, create a timed immunity AE with 
 - **Actor HP** and **Opponent HP**: independent optional comparisons of current HP to maximum HP, excluding temporary HP. Actor means the triggered activity owner; opponent means each creature involved in the event. Movement has no opponent. Existing HP filters retain their original subject.
 - **Opponent Sizes** and **Opponent Types**: optional per-opponent filters. Only matching opponents are included when an event involves several creatures.
 - **Attack Outcome**: All, Hit, or Miss for Attacks, evaluated per target; unknown outcomes match only All.
+- **This item only**: limits Use, Attacks, Damages, Heals and target saving throw triggers to events originating from the item containing the triggered activity. Other copies of the same item do not match. Unavailable for reactive events or this actor's own saving throws.
+- **AC5e condition**: the bottom-left button opens AC5e's condition editor and adds an expression that must pass alongside existing BM5e filters. A green tint and the label **AC5e condition (added)** indicate a configured condition; hover to see its expression. Clear the expression in the editor to remove the condition. It works for every BM5e trigger event, independently of AC5e's own hooks. If AC5e is unavailable, saved conditions are retained and enabled conditions prevent the trigger from firing. The condition button turns red and a trash button appears beside it. Click the trash button to clear the condition and hide both controls, then **Save** to remove it. **Cancel** retains the saved condition. With no saved condition and no AC5e editor, neither control is shown.
 - **Damage Types** or **Healing Types**: optional type filters for the corresponding events, including damage-type filtering on attack events.
 - **Exclude Damage Types**: optional veto for Damaged, Damages, Attacked, and Attacks. Any excluded type present suppresses the entire trigger, even when another type matches Damage Types. Damage events use resolved damage types; attack events use the activity's configured damage types. Disabling this filter preserves its choices. Healing events are unaffected.
 - **Source Item Types**: an optional filter for the item that produced a damage, healing, or attack event.
 - **Automatically target the other creature**: receiver events target the source creature, source events target the affected creature, and Movement or In Range targets the triggering token.
-- **Bypass use dialog**: skips the activity use dialog.
+- **Counts as a reaction**: requires an unused reaction in combat and records Reaction Used after successful use. Disable for free responses. Until explicitly configured, existing triggers keep their previous behavior: About to be hit and triggers on Reaction items count as reactions. Other triggers do not.
+- **Bypass use dialog**: skips the activity use dialog. Spells require resources for their default casting configuration; BM5e does not automatically spend a higher-level slot. Leave this disabled to offer the trigger when an eligible higher slot is available and choose the slot in the dialog.
 - **Automatically roll activity**: immediately uses the activity after creating its Triggered chat message. When disabled, the message waits for user input.
+
+**Ability Rolls** groups check and saving throw triggers. Roll Check includes ability, skill/tool and initiative rolls. Roll Save includes ordinary, death and concentration saves and does not require a DC. Roll Types can restrict which category qualifies; Abilities and check-specific Skills/Tools add further restrictions. Empty or disabled filters allow all applicable types. Existing roll conditions, including Natural 1/20, work on these events.
+
+Success/failure events require a recorded DC. Initiative only fires Roll Check. Save outcomes retain Whose save? for the actor's own save or a target of its activity. Roll Save always refers to the activity owner's save and has no opponent. Repeated updates and rerolls do not offer the same event/activity twice for one roll message; a changed outcome can offer its newly matching outcome event. Check/save-roll responses do not recursively trigger the same roll-response path.
+
+**Actor Falls** uses the incoming damage path restricted to the system's falling-damage marker or damage property. It does not require the actor to retain Falling status. With **Reduce Incoming Damage**, **Resist Incoming Damage** or **Immune to Incoming Damage** enabled and **Mutable Damage Calculation** active, the response runs during calculation before HP changes. Without one of these behaviors, it follows damage application. To prevent landing damage, enable **Immune to Incoming Damage** with **All damage** selected or the Damage Types filter disabled. No reduction formula is needed. Choose **Counts as a reaction** if the response costs one. Automatic targeting uses the falling creature's recorded token, not the chat speaker. There is no opponent for this event.
+
+This first implementation runs after landing damage is rolled and does not slow descent. Merely adding Falling status or making a fall too short to produce a damage roll does not trigger it.
+
+**Actor Heals** and **Is Healed** include temporary-HP applications by default. **Healing Types** narrows which types qualify. Temporary HP replaces a lower pool rather than stacking: granting 10 to a creature with 8 temporary HP gives an applied total of 2. A lower or equal grant still qualifies as a healing application but its applied total is 0.
 
 The editor groups Event under **Trigger**, activity options under **Behaviours**, and optional filters under **Toggle Filters**. Filter and reduction toggles retain their configured values when disabled.
 
-All enabled filters must match (**AND**). Multiple choices within one filter match any selected value (**OR**). For example, selecting Tiny and Small sizes plus Opponent HP at or below 50% triggers only for a Tiny or Small opponent whose HP is at or below 50%. Disabled filters do not restrict triggers, and their saved choices return when re-enabled.
+All enabled filters must match (**AND**). Multiple choices within item, damage-type, size and creature-type filters match any selected value (**OR**). Roll conditions must all match. Status filters let you choose **All selected** or **Any selected**; excluded statuses must all be absent. For example, selecting Tiny and Small sizes plus Opponent HP at or below 50% triggers only for a Tiny or Small opponent whose HP is at or below 50%. Disabled filters do not restrict triggers, and their saved choices return when re-enabled.
+
+The editor uses AC5e's native suggestions, populated from the BM5e event. `rollingActor` is the creature performing the action or saving throw and `opponentActor` is its counterpart. On an incoming attack, `rollingActor` is the attacker and `opponentActor` is the defender. On a save, `rollingActor` is the saving creature. Standalone saves have no opponent. Use `item`, `activity`, `ammunitionName`, `damageTypes`, `attackMode`, `d20Total`, `isSuccess` and the other native fields when their event context is available.
+
+BM5e-specific filters stay in the trigger editor instead of adding pills to AC5e:
+
+- **Roll conditions**: critical or not critical, had or did not have advantage/disadvantage, natural 20/1, double natural 20/1 and maximum damage rolled. All selected conditions must match. Selecting an opposing choice replaces the earlier choice.
+- **Natural 20/1** uses the kept d20. **Double natural 20/1** requires at least two matching results in the final d20 pool, including discarded keep/drop dice. Any two of Elven Accuracy's three dice qualify. Replaced rerolls do not count.
+- Attack conditions on damage/healing events require exactly one associated attack row. Saving throw conditions use the saving creature's roll. Missing roll data fails both positive and negative conditions.
+- **Maximum damage rolled** requires dice and every damage part to reach its recorded formula's maximum, including bonuses and critical dice. It checks the original roll before defenses or HP limits. Standard arithmetic, keep/drop and minimum/maximum die modifiers are supported; unbounded explosions and unsupported custom terms do not pass.
+- **Damage/healing amount** compares a non-negative number against **Rolled** (original card total), **Calculated** (after defenses and reductions already resolved but before HP limits) or **Applied** (actual HP restored plus temporary HP gained, or HP and temporary HP lost). Applied is unavailable for pre-application damage responses. A stage without recorded data does not pass.
+- **Opponent Types** also offers **Subtype / custom type** for exact, case-insensitive subtype, custom type, race identifier or actor-type matches. Separate alternatives with commas or semicolons. If a base type is selected, it must also match: Humanoid plus `elf; gith` requires a humanoid with either identifier. Entries containing `*` match partial text anywhere in a value: `elf*` matches High-Elf or Wood elf, and `red*` matches Red Dragon or Dragon, red. Without `*`, entries keep exact matching. The text field can also be used alone and works without AC5e.
+- **Actor state** and **Opponent state** check temporary HP, required statuses and excluded statuses. Actor means the owner of the triggered activity. An empty selection adds no restriction. Opponent state requires an actual opponent when a condition is selected.
+- **Movement distance** compares completed movement in scene units, including every segment.
+
+Existing HP percentage filters cover full HP (`= 100%`), below full (`< 100%`), half HP (`= 50%`), below or above half (`< 50%` or `> 50%`) and zero (`= 0%`). These native filters work without AC5e.
+
+Existing expressions using legacy aliases such as `actor`, `opponent`, `attack`, `save`, `sourceActivity` or their `bm5e` equivalents continue to work. These aliases, including `bm5e.damage.total` and `bm5e.movement.distanceTraveled`, remain available to existing expressions but no longer add editor suggestions. Missing required data or an evaluation error prevents the trigger from firing. An empty expression adds no restriction when AC5e is available.
+
+- Use `opponentActor.abilities.int.value > 4 && distance <= 30` to check the acting creature's counterpart. Distance requires both tokens in the same scene and never picks an arbitrary active token.
+- Use `d20Result === 1` for the kept natural d20 on an attack or saving throw. Discarded advantage/disadvantage dice are excluded. Damage triggers also receive `hasAdvantage`, `hasDisadvantage` and d20 results when their damage message identifies exactly one associated attack row. Direct damage and ambiguous associations have no attack-roll context; conditions requiring it do not pass.
+- Use `ammunitionName === 'Arrow +3'` or `ammunition.identifier === 'arrow-3'` for the ammunition used by an attack. Ammunition fields use flattened AC5e data and retain the native saved copy when the last piece was consumed. Damage events use the associated attack's ammunition when that association identifies one attack message; missing or ambiguous ammunition does not pass an ammunition-dependent condition.
+- `item` keeps BM5e's document fields and also exposes AC5e item data. Use `itemType` for AC5e's item-type checks or `bm5e.item.type` for the document type.
+- With AC5e's suggestion availability support, fields unsupported by the selected trigger event appear disabled with an explanatory tooltip. Fields depending on runtime circumstances, such as an opponent or two scene tokens, remain selectable. Existing expressions are preserved; accessing unavailable data prevents the condition from passing, even when negated.
+- Attack conditions use the recorded ability, mastery, modifier, proficiency and AC5e optional selections when available. Linked damage can use the exact associated attack's roll metadata. Missing recorded mastery or advantage source states are unavailable rather than inferred from current item defaults.
+- `damageTypes` describes the activity's unambiguous damage types on attack events and the event's damage types on damage/healing events. `defaultDamageType` uses recorded damage metadata or an unambiguous activity default before damage is rolled. An unresolved choice of damage types is unavailable.
+- Movement and In Range use their own event context. They do not supply an invented attack or saving throw. Effect-origin and aura-specific fields from AC5e Active Effects are unavailable here.
+- AC5e versions without the evaluation API retain the original BM5e-only condition data. AC5e roll fields require an actual relevant roll and visibility requires both tokens in the same scene.
 
 For a Shield-style reaction, set the Item to Reaction, its casting activity to BM5E Triggers, the event to **About to be hit**, and the AC bonus to `5`. Keep native spell-slot/resource consumption on the casting activity. After an attack hits, the defender's owner or a GM can click the shield button on its attack card (including an embedded attack summary). After successful casting, BM5E automatically applies all effects listed on that cast's usage message to the defender through native effect preparation. That retains native scaling, duration, origin, and existing-effect refresh behavior. The defender's resulting AC increase counts toward the configured attack bonus, preventing a Shield effect and a configured `5` from becoming `+10`. The resulting bonus updates only that defender's recorded AC on that attack; native hit/miss evaluation and linked card/application outcomes refresh. It preserves other targets, attack totals, cover already included in the recorded AC, and natural critical hits. The automatically applied effects persist according to their configured duration and also cover subsequent attacks. Applications are recorded for the casting card's existing Remove Applied Effects control. Only effects applicable to that cast are applied; additional protections such as against Magic Missile depend on the configured effects.
 
@@ -323,7 +363,7 @@ Triggers respond to native D&D5e damage application and direct Actor HP updates 
 
 Movement triggers expose the completed movement distance as `@bm5e.distanceTraveled`, the scene's grid distance as `@bm5e.gridDistance`, and the floored number of grid intervals moved as `@bm5e.gridDistanceTraveled`. Distance values use the scene's units and include all completed movement segments. For example, `(@bm5e.gridDistanceTraveled)d4` rolls one d4 per complete grid interval moved.
 
-Forced Movement additionally requires the movement update option `{ bm5eMovementSource: 'forced' }`. Ordinary movement does not fire it. Without active BAA5E, the event is hidden for new configurations, existing Forced Movement selections are disabled and preserved, and no Forced Movement trigger fires.
+**Is Moved (Forced)** additionally requires the movement update option `{ bm5eMovementSource: 'forced' }`. Ordinary movement does not fire it. Without active BAA5E, the event is hidden for new configurations, existing Is Moved (Forced) selections are disabled and preserved, and no Forced Movement trigger fires.
 
 ### Damage Trigger Values
 
@@ -349,9 +389,11 @@ Damage-type keys use system identifiers such as `fire`, `cold`, and `necrotic`. 
 
 **Resist Incoming Damage** uses the same pre-application casting flow and requires Mutable Damage Calculation. After a successful activity use, BM5E recalculates the original damage with resistance added only to that calculation's copied traits. With the Damage Types filter enabled, only matching selected types gain resistance; otherwise, all incoming damage types gain it. Existing resistance does not stack, and native immunity, vulnerability, rounding, and resistance bypasses remain in control. Declining or cancelling the activity grants no resistance.
 
-This option does not create a lasting Active Effect. Apply any associated resistance effect through the native activity Effects tray for later damage. For resistance alone, leave **Reduce Incoming Damage** disabled; enabling both also applies the numeric reduction after resistance. In combat, BM5E applies Reaction Used automatically; it expires at the Actor's next turn start.
+**Immune to Incoming Damage** uses the same mutable pre-application response flow, adding immunity only to the retried calculation's copied traits. Select specific **Damage Types** to protect those types. The **Unique Types** group uses the system's special damage definitions and automatically includes future additions. **Falling** matches falling-associated damage independently of its base type, so falling bludgeoning damage can be included or excluded separately from other bludgeoning damage. Selecting Falling for immunity or resistance protects only entries with the system's falling damage property. **All damage**, an empty selection or a disabled Damage Types filter protects all incoming damage for this application. Other filters still determine whether the response qualifies. Declining, cancelling or failing resource checks grants no immunity. Native immunity bypasses and downgrade controls remain in effect. Leave **Reduce Incoming Damage** disabled for immunity alone. Use **Counts as a reaction** when appropriate.
 
-The **Ghostly Command** example is available in the **BM5E Overtime Test Items** compendium. Its description covers BM5E configuration only. The Weapon and Spell source filter also accepts non-attack weapon damage; reaction costs and timing are not enforced automatically.
+Neither resistance nor immunity creates a lasting Active Effect. Apply any associated resistance effect through the native activity Effects tray for later damage. For resistance alone, leave **Reduce Incoming Damage** disabled; enabling both also applies the numeric reduction after resistance. When **Counts as a reaction** is enabled, BM5E records Reaction Used in combat; it expires at the actor's next turn start.
+
+The **Ghostly Command** example is available in the **Items (BM5e)** compendium. Its description covers BM5E configuration only. The Weapon and Spell source filter also accepts non-attack weapon damage; reaction costs and timing are not enforced automatically.
 
 For **About to be hit**, **Show in chat** places the reaction button directly on the eligible attack card. Disabling it offers the reaction in a separate native turn/rest activity message whispered to the defender's owners. Both chat paths use the same casting, reaction consumption, AC update, and stale-offer guards. Using the activity directly from its sheet does not update the recorded attack result.
 
@@ -608,3 +650,7 @@ BM5E extends dnd5e enchantment activity cards so the user can choose a target an
 ### Magical overtime activities
 
 `magical=true` toggles the generated activity's magical state relative to its linked Item's magical property. The overtime editor exposes this as a checkbox. Automated Conditions 5e can read that state through its `prepareEvaluationState` hook.
+
+For **Is about to be hit**, **Automatically target the other creature** targets the recorded attacker when its token is available. The defending creature remains the subject of the reaction and any AC adjustment.
+
+**Is Attacked** supports All, Hit and Miss outcomes using the target's evaluated result when the trigger fires. Unknown outcomes match All only. Later reactions may change the attack result; existing trigger offers and uses are not reversed or reissued automatically.
